@@ -33,6 +33,7 @@ LOCAL_SRC_FILES += \
     loc_eng_dmn_conn_glue_pipe.c
 
 LOCAL_CFLAGS += \
+     -Werror \
      -fno-short-enums \
      -D_ANDROID_ \
      -Wno-unused-parameter
@@ -75,6 +76,7 @@ LOCAL_SRC_FILES += \
     gps.c
 
 LOCAL_CFLAGS += \
+    -Werror \
     -fno-short-enums \
      -D_ANDROID_ \
      -Wno-unused-parameter
