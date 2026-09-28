@@ -14,7 +14,5 @@
 # limitations under the License.
 #
 
-include device/qcom/sepolicy-legacy/sepolicy.mk
-
-# Enforce platform neverallow rules for the HTC product.
-SELINUX_IGNORE_NEVERALLOWS := false
+# HTC services add policy under this directory as their interfaces qualify.
+BOARD_VENDOR_SEPOLICY_DIRS += device/htc/msm8226-common/sepolicy/common
