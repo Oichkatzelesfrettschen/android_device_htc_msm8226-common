@@ -15,3 +15,6 @@
 #
 
 include device/qcom/sepolicy-legacy/sepolicy.mk
+
+# Enforce platform neverallow rules for the HTC product.
+SELINUX_IGNORE_NEVERALLOWS := false
