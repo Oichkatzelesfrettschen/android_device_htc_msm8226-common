@@ -40,17 +40,5 @@ persist.graphics.vulkan.disable=true
 # Memory optimizations
 ro.vendor.qti.sys.fw.bservice_enable=true
 
-# RIL
-persist.rild.nitz_plmn=""
-persist.rild.nitz_long_ons_0=""
-persist.rild.nitz_long_ons_1=""
-persist.rild.nitz_long_ons_2=""
-persist.rild.nitz_long_ons_3=""
-persist.rild.nitz_short_ons_0=""
-persist.rild.nitz_short_ons_1=""
-persist.rild.nitz_short_ons_2=""
-persist.rild.nitz_short_ons_3=""
-ril.subscription.types=NV,RUIM
-
 # Time
 persist.timed.enable=true

@@ -72,11 +72,11 @@ MAX_EGL_CACHE_KEY_SIZE := 12*1024
 MAX_EGL_CACHE_SIZE := 2048*1024
 
 # Filesystem
-TARGET_FS_CONFIG_GEN := device/samsung/msm8226-common/config.fs
+TARGET_FS_CONFIG_GEN := device/htc/msm8226-common/config.fs
 
 # HIDL
-DEVICE_MANIFEST_FILE := device/samsung/msm8226-common/manifest.xml
-DEVICE_MATRIX_FILE := device/samsung/msm8226-common/compatibility_matrix.xml
+DEVICE_MANIFEST_FILE := device/htc/msm8226-common/manifest.xml
+DEVICE_MATRIX_FILE := device/htc/msm8226-common/compatibility_matrix.xml
 PRODUCT_ENFORCE_VINTF_MANIFEST_OVERRIDE := true
 
 # Kernel
@@ -87,7 +87,7 @@ TARGET_KERNEL_ADDITIONAL_FLAGS := \
 TARGET_HAS_MEMFD_BACKPORT := true
 
 # SELinux
-include device/samsung/msm8226-common/sepolicy/sepolicy.mk
+include device/htc/msm8226-common/sepolicy/sepolicy.mk
 
 # Partitions
 TARGET_USERIMAGES_USE_EXT4 := true
@@ -105,10 +105,10 @@ TARGET_NEEDS_NETD_DIRECT_CONNECT_RULE := true
 TARGET_USES_INTERACTION_BOOST := true
 
 # Properties
-TARGET_SYSTEM_PROP += device/samsung/msm8226-common/system.prop
+TARGET_SYSTEM_PROP += device/htc/msm8226-common/system.prop
 
 # Recovery
-TARGET_RECOVERY_DEVICE_DIRS += device/samsung/msm8226-common
+TARGET_RECOVERY_DEVICE_DIRS += device/htc/msm8226-common
 
 # Time services
 BOARD_USES_QC_TIME_SERVICES := true
@@ -135,4 +135,4 @@ WIFI_DRIVER_FW_PATH_AP           := "ap"
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
 
 # inherit from the proprietary version
-include vendor/samsung/msm8226-common/BoardConfigVendor.mk
+include vendor/htc/a11chl/BoardConfigVendor.mk
