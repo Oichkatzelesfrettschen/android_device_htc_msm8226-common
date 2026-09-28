@@ -1,3 +1,5 @@
-Copyright 2012 - The CyanogenMod Project
+# HTC msm8226 common device tree
 
-Common Samsung 8226 repository
+This tree carries shared Android 11 msm8226 source integration for the HTC Desire 510. The LineageOS `device/samsung/qcom-common` project supplies the Qualcomm base through the declared `lineage.dependencies` entry and the workbench local manifest. The HTC a11 tree owns the camera wrapper, RIL, board init, USB switching, overlays, radio policy, and calibration. The private `vendor/htc/a11chl` project supplies the candidate 18.1 blobs and generated makefiles.
+
+The common proprietary list records donor origins and extraction hashes. Its Samsung firmware origins do not establish compatibility with HTC board calibration. The vendor product selects each blob only after the ABI and hardware gates in the HTC Desire 510 port plan.
