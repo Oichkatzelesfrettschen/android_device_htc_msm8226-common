@@ -44,7 +44,8 @@ TARGET_USES_64_BIT_BINDER := true
 BOARD_HAVE_BLUETOOTH := true
 
 # Camera
-TARGET_HAS_LEGACY_CAMERA_HAL1 := true
+# Android 11's camera provider owns framework camera services; the legacy
+# Lineage HAL1 policy selector assigns them to mediaserver instead.
 TARGET_NEEDS_LEGACY_CAMERA_HAL1_DYN_NATIVE_HANDLE := true
 TARGET_USES_MEDIA_EXTENSIONS := true
 TARGET_USES_NON_TREBLE_CAMERA := true
