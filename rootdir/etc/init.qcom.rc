@@ -59,3 +59,17 @@ service wcnss-service /system/bin/wcnss_service
     user system
     group system wifi radio diag
     oneshot
+
+# The HTC acdb loader set that the audio HAL dlopens references HTC liblog's
+# __htclog_init_mask; liba11-legacy-radio.so provides that ABI, so the audio
+# HAL preloads it as the radio daemons do.
+service vendor.audio-hal /vendor/bin/hw/android.hardware.audio.service
+    override
+    class hal
+    user audioserver
+    group audio camera drmrpc inet media mediadrm net_bt net_bt_admin net_bw_acct wakelock context_hub
+    capabilities BLOCK_SUSPEND
+    ioprio rt 4
+    task_profiles ProcessCapacityHigh HighPerformance
+    onrestart restart audioserver
+    setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
