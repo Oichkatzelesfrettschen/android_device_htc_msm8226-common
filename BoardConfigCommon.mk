@@ -130,8 +130,9 @@ TARGET_PROVIDES_WCNSS_QMI        := true
 TARGET_USES_QCOM_WCNSS_QMI       := true
 TARGET_USES_WCNSS_CTRL           := true
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
-WIFI_DRIVER_MODULE_PATH          := "/vendor/lib/modules/wlan.ko"
-WIFI_DRIVER_MODULE_NAME          := "wlan"
+# The Pronto WLAN driver is built into the kernel and initializes when the HAL
+# writes WIFI_DRIVER_FW_PATH_STA to /sys/module/wlan/parameters/fwpath; the
+# HAL loads no module.
 WIFI_DRIVER_FW_PATH_STA          := "sta"
 WIFI_DRIVER_FW_PATH_AP           := "ap"
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
