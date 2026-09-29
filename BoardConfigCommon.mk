@@ -44,7 +44,8 @@ TARGET_USES_64_BIT_BINDER := true
 BOARD_HAVE_BLUETOOTH := true
 
 # Camera
-TARGET_HAS_LEGACY_CAMERA_HAL1 := true
+# Android 11's camera provider owns framework camera services; the legacy
+# Lineage HAL1 policy selector assigns them to mediaserver instead.
 TARGET_NEEDS_LEGACY_CAMERA_HAL1_DYN_NATIVE_HANDLE := true
 TARGET_USES_MEDIA_EXTENSIONS := true
 TARGET_USES_NON_TREBLE_CAMERA := true
@@ -72,29 +73,30 @@ MAX_EGL_CACHE_KEY_SIZE := 12*1024
 MAX_EGL_CACHE_SIZE := 2048*1024
 
 # Filesystem
-TARGET_FS_CONFIG_GEN := device/samsung/msm8226-common/config.fs
+TARGET_FS_CONFIG_GEN := device/htc/msm8226-common/config.fs
 
 # HIDL
-DEVICE_MANIFEST_FILE := device/samsung/msm8226-common/manifest.xml
-DEVICE_MATRIX_FILE := device/samsung/msm8226-common/compatibility_matrix.xml
+DEVICE_MANIFEST_FILE := device/htc/msm8226-common/manifest.xml
+DEVICE_MATRIX_FILE := device/htc/msm8226-common/compatibility_matrix.xml
 PRODUCT_ENFORCE_VINTF_MANIFEST_OVERRIDE := true
 
 # Kernel
 TARGET_KERNEL_ADDITIONAL_FLAGS := \
-    HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
+    -j2 HOSTCFLAGS="-fcommon -Werror" KCFLAGS=-Werror LDFLAGS=--fatal-warnings
 
 # Legacy memfd
 TARGET_HAS_MEMFD_BACKPORT := true
 
 # SELinux
-include device/samsung/msm8226-common/sepolicy/sepolicy.mk
+include device/htc/msm8226-common/sepolicy/sepolicy.mk
 
 # Partitions
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
-BOARD_ROOT_EXTRA_FOLDERS := efs firmware firmware-modem persist
+# The read-only root carries the vfat firmware mountpoints that fstab.qcom uses.
+BOARD_ROOT_EXTRA_FOLDERS := efs firmware firmware/adsp firmware/radio firmware/wcnss firmware-modem persist
 BOARD_ROOT_EXTRA_SYMLINKS := \
     /data/tombstones:/tombstones
 
@@ -105,10 +107,10 @@ TARGET_NEEDS_NETD_DIRECT_CONNECT_RULE := true
 TARGET_USES_INTERACTION_BOOST := true
 
 # Properties
-TARGET_SYSTEM_PROP += device/samsung/msm8226-common/system.prop
+TARGET_SYSTEM_PROP += device/htc/msm8226-common/system.prop
 
 # Recovery
-TARGET_RECOVERY_DEVICE_DIRS += device/samsung/msm8226-common
+TARGET_RECOVERY_DEVICE_DIRS += device/htc/msm8226-common
 
 # Time services
 BOARD_USES_QC_TIME_SERVICES := true
@@ -128,11 +130,12 @@ TARGET_PROVIDES_WCNSS_QMI        := true
 TARGET_USES_QCOM_WCNSS_QMI       := true
 TARGET_USES_WCNSS_CTRL           := true
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
-WIFI_DRIVER_MODULE_PATH          := "/vendor/lib/modules/wlan.ko"
-WIFI_DRIVER_MODULE_NAME          := "wlan"
+# The Pronto WLAN driver is built into the kernel and initializes when the HAL
+# writes WIFI_DRIVER_FW_PATH_STA to /sys/module/wlan/parameters/fwpath; the
+# HAL loads no module.
 WIFI_DRIVER_FW_PATH_STA          := "sta"
 WIFI_DRIVER_FW_PATH_AP           := "ap"
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
 
 # inherit from the proprietary version
-include vendor/samsung/msm8226-common/BoardConfigVendor.mk
+include vendor/htc/a11chl/BoardConfigVendor.mk

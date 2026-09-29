@@ -24,6 +24,7 @@ LOCAL_SRC_FILES += \
 
 # Flag -std=c++11 is not accepted by compiler when LOCAL_CLANG is set to true
 LOCAL_CFLAGS += \
+     -Werror \
      -fno-short-enums \
      -D_ANDROID_ \
      -Wno-unused-parameter
