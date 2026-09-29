@@ -1,2 +1,9 @@
 soong_namespace {
 }
+
+cc_library_shared {
+    name: "liba11-legacy-radio",
+    vendor: true,
+    srcs: ["radio/legacy_radio_abi.c"],
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+}

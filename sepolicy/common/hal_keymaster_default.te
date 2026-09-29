@@ -1,2 +1,0 @@
-allow hal_keymaster_default vfat:dir search;
-allow hal_keymaster_default vfat:file r_file_perms;

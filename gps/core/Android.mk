@@ -22,6 +22,7 @@ LOCAL_SRC_FILES += \
     loc_core_log.cpp
 
 LOCAL_CFLAGS += \
+     -Werror \
      -fno-short-enums \
      -D_ANDROID_ \
      -Wno-unused-parameter

@@ -14,10 +14,5 @@
 # limitations under the License.
 #
 
-include device/qcom/sepolicy-legacy/sepolicy.mk
-
-# Board specific SELinux policy variable definitions
-BOARD_VENDOR_SEPOLICY_DIRS += \
-    device/samsung/msm8226-common/sepolicy/common
-SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += \
-    device/samsung/msm8226-common/sepolicy/private
+# HTC services add policy under this directory as their interfaces qualify.
+BOARD_VENDOR_SEPOLICY_DIRS += device/htc/msm8226-common/sepolicy/common

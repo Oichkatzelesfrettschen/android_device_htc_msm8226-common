@@ -1,1 +1,0 @@
-allow surfaceflinger sysfs_graphics:file r_file_perms;
