@@ -6,6 +6,11 @@ on fs
 on late-fs
     mount_all /vendor/etc/fstab.qcom --late
 
+# The Wi-Fi HAL runs as wifi and starts the built-in WLAN driver by writing
+# its firmware mode to fwpath.
+on boot
+    chown wifi wifi /sys/module/wlan/parameters/fwpath
+
 # HTC's radio daemons use the modem calibration partitions and QMI sockets.
 # They start only when persist.vendor.radio.start is 1: qmuxd opens the SMD
 # port that boots the modem, and HTC qmuxd requests reboot,oem-98 once the
