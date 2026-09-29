@@ -1,0 +1,38 @@
+# HTC a11chl mounts the firmware partitions before vendor services use them.
+on fs
+    mkdir /firmware 0771 system system
+    mkdir /firmware/radio 0771 system system
+    mkdir /firmware/adsp 0771 system system
+    mkdir /firmware/wcnss 0771 system system
+    mount_all /vendor/etc/fstab.qcom --early
+    swapon_all /vendor/etc/fstab.qcom
+
+on late-fs
+    mount_all /vendor/etc/fstab.qcom --late
+
+# HTC's radio daemons use the modem calibration partitions and QMI sockets.
+service rmt_storage /vendor/bin/rmt_storage modem_st1 modem_st2 fsc recovery radio_config cdma_record
+    class core
+    user root
+    group system wakelock
+    shutdown critical
+    ioprio rt 0
+    setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
+
+service qmuxd /vendor/bin/qmuxd
+    class core
+    user radio
+    group radio audio bluetooth gps diag log
+    setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
+
+service netmgrd /vendor/bin/netmgrd
+    class core
+    user root
+    group radio inet net_admin net_raw
+    setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
+
+service wcnss-service /system/bin/wcnss_service
+    class late_start
+    user system
+    group system wifi radio diag
+    oneshot
