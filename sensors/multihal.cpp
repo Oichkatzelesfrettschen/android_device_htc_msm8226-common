@@ -474,7 +474,8 @@ static void get_so_paths(std::vector<std::string> *so_paths) {
             break;
         }
     }
-    if(!stream) {
+    // A default-constructed ifstream has no failbit, so test the path.
+    if (path == nullptr) {
         ALOGW("No multihal config file found");
         return;
     }
