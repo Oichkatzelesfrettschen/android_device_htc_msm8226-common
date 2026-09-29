@@ -1,0 +1,8 @@
+# The Sprint RIL needs its HTC QMI implementation and legacy logging ABI.
+service ril-daemon /vendor/bin/hw/rild -l /vendor/lib/libril-qc-qmi-1.so
+    override
+    class main
+    user radio
+    group radio cache inet misc audio log readproc wakelock diag
+    capabilities BLOCK_SUSPEND NET_ADMIN NET_RAW
+    setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
