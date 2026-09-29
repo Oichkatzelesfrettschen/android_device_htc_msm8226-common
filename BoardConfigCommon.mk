@@ -95,7 +95,8 @@ TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
-BOARD_ROOT_EXTRA_FOLDERS := efs firmware firmware-modem persist
+# The read-only root carries the vfat firmware mountpoints that fstab.qcom uses.
+BOARD_ROOT_EXTRA_FOLDERS := efs firmware firmware/adsp firmware/radio firmware/wcnss firmware-modem persist
 BOARD_ROOT_EXTRA_SYMLINKS := \
     /data/tombstones:/tombstones
 

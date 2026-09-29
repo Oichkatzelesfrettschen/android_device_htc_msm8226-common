@@ -26,6 +26,10 @@
 #
 
 # the DIAG device node is not world writable/readable.
+# PIL requests modem, MBA, ADSP, and WCNSS images by bare name; HTC keeps them on
+# the vfat radio, adsp, and wcnss partitions that fstab.qcom mounts under /firmware.
+firmware_directories /firmware/radio/ /firmware/adsp/image/ /firmware/wcnss/
+
 /dev/diag_mdm             0660   radio      radio
 /dev/htcdiag              0660   radio      radio
 /dev/htc_diag             0660   radio      radio
