@@ -7,8 +7,17 @@ on late-fs
     mount_all /vendor/etc/fstab.qcom --late
 
 # HTC's radio daemons use the modem calibration partitions and QMI sockets.
+# They start only when persist.vendor.radio.start is 1: qmuxd opens the SMD
+# port that boots the modem, and HTC qmuxd requests reboot,oem-98 once the
+# modem stays unreachable, so the modem boots only with its EFS server ready.
+on property:persist.vendor.radio.start=1
+    start rmt_storage
+    start qmuxd
+    start netmgrd
+
 service rmt_storage /vendor/bin/rmt_storage modem_st1 modem_st2 fsc recovery radio_config cdma_record
     class core
+    disabled
     user root
     group system wakelock
     shutdown critical
@@ -17,12 +26,14 @@ service rmt_storage /vendor/bin/rmt_storage modem_st1 modem_st2 fsc recovery rad
 
 service qmuxd /vendor/bin/qmuxd
     class core
+    disabled
     user radio
     group radio audio bluetooth gps diag log
     setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
 
 service netmgrd /vendor/bin/netmgrd
     class core
+    disabled
     user root
     group radio inet net_admin net_raw
     setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
