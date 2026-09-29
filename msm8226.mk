@@ -16,6 +16,8 @@
 
 # Permissions
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/etc/init.qcom.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.qcom.rc \
+    $(LOCAL_PATH)/rootdir/etc/ueventd.qcom.rc:$(TARGET_COPY_OUT_VENDOR)/ueventd.rc \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml \
     frameworks/native/data/etc/android.hardware.camera.autofocus.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.autofocus.xml \
@@ -134,6 +136,8 @@ PRODUCT_COPY_FILES += \
     device/htc/msm8226-common/configs/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml
 
 # Network - Do not spin up a separate process for the network stack, use an in-process APK.
+PRODUCT_PACKAGES += liba11-legacy-radio
+
 PRODUCT_PACKAGES += \
     InProcessNetworkStack \
     com.android.tethering.inprocess
