@@ -159,6 +159,14 @@ PRODUCT_PACKAGES += \
     libOmxVenc \
     libstagefrighthw
 
+# Sensors: the multihal loads the sub-HALs listed in
+# /vendor/etc/sensors/_hals.conf; with no list it serves ISensors with no
+# sensors, which lets SensorService start.
+PRODUCT_PACKAGES += \
+    android.hardware.sensors@1.0-impl.htc8226 \
+    android.hardware.sensors@1.0-service.htc8226 \
+    sensors.msm8226
+
 # Power HAL
 PRODUCT_PACKAGES += \
     android.hardware.power-service-qti
