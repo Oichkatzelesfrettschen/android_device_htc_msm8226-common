@@ -15,6 +15,13 @@ on boot
     # adsp-loader boots it.
     write /sys/kernel/boot_adsp/boot 1
 
+# wpa_supplicant copies its template configuration into /data/vendor/wifi/wpa
+# and opens its control sockets under wpa/sockets; it creates neither directory.
+on post-fs-data
+    mkdir /data/vendor/wifi 0770 wifi wifi
+    mkdir /data/vendor/wifi/wpa 0770 wifi wifi
+    mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
+
 # HTC's radio daemons use the modem calibration partitions and QMI sockets.
 # They start only when persist.vendor.radio.start is 1: qmuxd opens the SMD
 # port that boots the modem, and HTC qmuxd requests reboot,oem-98 once the
