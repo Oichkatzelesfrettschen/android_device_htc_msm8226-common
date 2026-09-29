@@ -10,6 +10,10 @@ on late-fs
 # its firmware mode to fwpath.
 on boot
     chown wifi wifi /sys/module/wlan/parameters/fwpath
+    # The aDSP carries the LPASS audio path: the msm8226 ASoC machine driver
+    # defers its probe until the aDSP is up, so no sound card exists until
+    # adsp-loader boots it.
+    write /sys/kernel/boot_adsp/boot 1
 
 # HTC's radio daemons use the modem calibration partitions and QMI sockets.
 # They start only when persist.vendor.radio.start is 1: qmuxd opens the SMD
