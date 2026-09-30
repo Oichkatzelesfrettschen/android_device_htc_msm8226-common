@@ -49,6 +49,8 @@ firmware_directories /firmware/radio/ /firmware/adsp/image/ /firmware/wcnss/
 /dev/smd_cxm_qmi          0640   radio      radio
 /dev/smd5                 0660   system     system
 /dev/smd6                 0660   system     system
+/dev/smd2                 0660   bluetooth  bluetooth
+/dev/smd3                 0660   bluetooth  bluetooth
 /dev/smd7                 0660   bluetooth  bluetooth
 
 #permissions for CSVT
