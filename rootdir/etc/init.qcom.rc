@@ -60,6 +60,13 @@ service wcnss-service /system/bin/wcnss_service
     group system wifi radio diag
     oneshot
 
+# The HAL and daemon exchange V4L2 events and per-camera Unix sockets.
+service qcamerasvr /vendor/bin/mm-qcamera-daemon
+    class late_start
+    user camera
+    group camera system inet input graphics
+    setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
+
 # libbt-vendor sets bluetooth.hciattach=true on each enable and waits for
 # bluetooth.status=on before it opens the SMD transport. hci_qcomm_init imports
 # HTC liblog's __htclog_init_mask, so the service preloads the shim.
