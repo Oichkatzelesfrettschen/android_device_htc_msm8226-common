@@ -60,6 +60,23 @@ service wcnss-service /system/bin/wcnss_service
     group system wifi radio diag
     oneshot
 
+# libbt-vendor sets bluetooth.hciattach=true on each enable and waits for
+# bluetooth.status=on before it opens the SMD transport. hci_qcomm_init imports
+# HTC liblog's __htclog_init_mask, so the service preloads the shim.
+service hciattach /vendor/bin/sh /vendor/bin/init.qcom.bt.sh
+    class late_start
+    user bluetooth
+    group bluetooth net_bt_admin system
+    setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
+    disabled
+    oneshot
+
+on property:bluetooth.hciattach=true
+    start hciattach
+
+on property:bluetooth.hciattach=false
+    setprop bluetooth.status off
+
 # The HTC acdb loader set that the audio HAL dlopens references HTC liblog's
 # __htclog_init_mask; liba11-legacy-radio.so provides that ABI, so the audio
 # HAL preloads it as the radio daemons do.
