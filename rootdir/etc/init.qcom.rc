@@ -18,6 +18,8 @@ on boot
 # wpa_supplicant copies its template configuration into /data/vendor/wifi/wpa
 # and opens its control sockets under wpa/sockets; it creates neither directory.
 on post-fs-data
+    # Label the QMUX directory before QCRIL binds its client sockets.
+    mkdir /dev/socket/qmux_radio 0770 radio radio
     mkdir /data/vendor/wifi 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
