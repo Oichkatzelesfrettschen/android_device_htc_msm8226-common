@@ -8,12 +8,29 @@ ro.audio.flinger_standbytime_ms=300
 # Bluetooth
 bluetooth.enable_timeout_ms=12000
 
-# Dalvik
-dalvik.vm.heapstartsize=16m
+# Dalvik: 480x854 hdpi needs modest initial and retained free heaps; preserve
+# the Go 128 MiB growth limit and 256 MiB large-heap ceiling for app compatibility.
+dalvik.vm.heapstartsize=8m
+dalvik.vm.heapgrowthlimit=128m
 dalvik.vm.heapsize=256m
 dalvik.vm.heaptargetutilization=0.75
 dalvik.vm.heapminfree=512k
-dalvik.vm.heapmaxfree=8m
+dalvik.vm.heapmaxfree=4m
+
+# One compiler worker bounds concurrent compiler allocations and leaves CPU
+# time for the UI on Cortex-A7. Keep boot verification cheap and compile only
+# profiled install methods; first boot quickens APKs that lack preopt output.
+dalvik.vm.dex2oat-threads=1
+dalvik.vm.boot-dex2oat-threads=1
+dalvik.vm.restore-dex2oat-threads=1
+pm.dexopt.first-boot=quicken
+pm.dexopt.boot=verify
+pm.dexopt.install=speed-profile
+
+# Linux 3.4 uses the in-kernel LMK interface and framework minfree targets.
+# Disable PSI selection and retain minfree semantics for vmpressure monitoring.
+ro.lmk.use_psi=false
+ro.lmk.use_minfree_levels=true
 
 # Display
 ro.hdcp2.rx=tz
