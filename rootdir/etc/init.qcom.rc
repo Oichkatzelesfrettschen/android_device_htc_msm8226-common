@@ -18,9 +18,17 @@ on boot
 # wpa_supplicant copies its template configuration into /data/vendor/wifi/wpa
 # and opens its control sockets under wpa/sockets; it creates neither directory.
 on post-fs-data
+    # Recovery-created cache markers must use the platform cache label.
+    restorecon /cache/.version
+    # Label the QMUX directory before QCRIL binds its client sockets.
+    mkdir /dev/socket/qmux_radio 0770 radio radio
     mkdir /data/vendor/wifi 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
+
+on property:sys.boot_completed=1
+    # Recovery-created media markers must use the platform media label.
+    restorecon /data/media/0/TWRP/.twrps
 
 # HTC's radio daemons use the modem calibration partitions and QMI sockets.
 # They start only when persist.vendor.radio.start is 1: qmuxd opens the SMD
@@ -60,6 +68,13 @@ service wcnss-service /system/bin/wcnss_service
     group system wifi radio diag
     oneshot
 
+# The HAL and daemon exchange V4L2 events and per-camera Unix sockets.
+service qcamerasvr /vendor/bin/mm-qcamera-daemon
+    class late_start
+    user camera
+    group camera system inet input graphics
+    setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
+
 # libbt-vendor sets bluetooth.hciattach=true on each enable and waits for
 # bluetooth.status=on before it opens the SMD transport. hci_qcomm_init imports
 # HTC liblog's __htclog_init_mask, so the service preloads the shim.
@@ -70,6 +85,7 @@ service hciattach /vendor/bin/sh /vendor/bin/init.qcom.bt.sh
     setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
     disabled
     oneshot
+    seclabel u:r:htc_bluetooth_loader:s0
 
 on property:bluetooth.hciattach=true
     start hciattach

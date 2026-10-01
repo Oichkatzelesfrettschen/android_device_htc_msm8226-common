@@ -1,0 +1,14 @@
+type htc_bluetooth_loader, domain;
+type htc_bluetooth_loader_exec, exec_type, vendor_file_type, file_type;
+type htc_bluetooth_script_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(htc_bluetooth_loader)
+
+# The init script configures Bluetooth and publishes completion to the HAL.
+allow htc_bluetooth_loader htc_bluetooth_script_exec:file rx_file_perms;
+allow htc_bluetooth_loader vendor_shell_exec:file rx_file_perms;
+allow htc_bluetooth_loader vendor_shell_exec:file entrypoint;
+allow htc_bluetooth_loader vendor_toolbox_exec:file rx_file_perms;
+allow htc_bluetooth_loader htc_bluetooth_loader_exec:file execute_no_trans;
+allow htc_bluetooth_loader htc_bt_smd_device:chr_file rw_file_perms;
+r_dir_file(htc_bluetooth_loader, htc_sysfs_bdaddress)
+set_prop(htc_bluetooth_loader, bluetooth_prop)

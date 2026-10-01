@@ -1,0 +1,3 @@
+# Linux 3.4 requests personality-8 for ARM binaries even with modprobe disabled.
+# SELinux system permissions cannot distinguish individual module names.
+dontaudit domain kernel:system module_request;
