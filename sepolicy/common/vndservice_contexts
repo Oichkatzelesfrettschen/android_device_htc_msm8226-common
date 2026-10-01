@@ -1,0 +1,2 @@
+# The legacy MSM8974 composer registers and queries the Qualcomm display service.
+display.qservice    u:object_r:qdisplay_service:s0
