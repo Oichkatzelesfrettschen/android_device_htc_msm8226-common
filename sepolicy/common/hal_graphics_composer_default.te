@@ -1,5 +1,5 @@
 # The legacy composer receives display hotplug events from the kernel.
-allow hal_graphics_composer_default self:netlink_kobject_uevent_socket read;
+allow hal_graphics_composer_default self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
 
 # The legacy composer uses Binder for display callbacks and vendor services.
 binder_use(hal_graphics_composer_default)
