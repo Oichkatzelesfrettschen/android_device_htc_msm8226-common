@@ -35,3 +35,8 @@ dontaudit cameraserver init:unix_stream_socket connectto;
 allow a11_camera_daemon gpu_device:chr_file rw_file_perms;
 # Preview and capture buffers come from gralloc.
 allow a11_camera_daemon hal_graphics_allocator:fd use;
+# The HAL logs the kernel version when it opens a camera.
+allow cameraserver proc_version:file r_file_perms;
+# Face recognition keeps an album at /data/fdAlbum; vendor domains may not
+# write the /data root, so the album stays in memory for the session.
+dontaudit a11_camera_daemon system_data_file:file write;
