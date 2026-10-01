@@ -52,4 +52,4 @@
 /dev/block/mmcblk0p42    u:object_r:cache_block_device:s0
 /dev/block/mmcblk0p44    u:object_r:userdata_block_device:s0
 /sys/devices/platform/htc_battery/power_supply(/.*)?    u:object_r:sysfs_batteryinfo:s0
-/sys/devices/qpnp-bms-eed4fc00/power_supply(/.*)?    u:object_r:sysfs_batteryinfo:s0
+/sys/devices/qpnp-bms-[0-9a-f]+/power_supply(/.*)?    u:object_r:sysfs_batteryinfo:s0
