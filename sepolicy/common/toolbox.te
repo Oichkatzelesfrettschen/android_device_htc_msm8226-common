@@ -1,0 +1,2 @@
+# swapon_all runs mkswap on the zram device that fstab.qcom declares.
+allow toolbox ram_device:blk_file rw_file_perms;
