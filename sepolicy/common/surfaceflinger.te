@@ -1,0 +1,1 @@
+allow surfaceflinger htc_sysfs_gpuclk:file r_file_perms;
