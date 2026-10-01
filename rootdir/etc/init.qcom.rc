@@ -64,7 +64,7 @@ service netmgrd /vendor/bin/netmgrd
     group radio inet net_admin net_raw
     setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
 
-service wcnss-service /system/bin/wcnss_service
+service wcnss-service /vendor/bin/wcnss_service
     class late_start
     user system
     group system wifi radio diag
