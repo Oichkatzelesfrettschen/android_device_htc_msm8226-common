@@ -22,6 +22,8 @@ on post-fs-data
     restorecon /cache/.version
     # Label the QMUX directory before QCRIL binds its client sockets.
     mkdir /dev/socket/qmux_radio 0770 radio radio
+    # mm-qcamera-daemon creates its per-camera sockets here.
+    mkdir /data/vcam 0770 camera camera
     mkdir /data/vendor/wifi 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
