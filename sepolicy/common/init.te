@@ -3,3 +3,5 @@ allow init htc_sysfs_sensors:file setattr;
 allow init htc_sysfs_adsp:file w_file_perms;
 allow init { htc_sysfs_cpu_boost htc_sysfs_ksm }:file w_file_perms;
 allow init htc_proc_last_kmsg:file setattr;
+# init.qcom.rc follows the android0 USB gadget link while it configures USB.
+allow init sysfs_android_usb:lnk_file read;
