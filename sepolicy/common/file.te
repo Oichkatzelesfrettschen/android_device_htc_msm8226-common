@@ -14,3 +14,4 @@ type htc_proc_last_kmsg, fs_type, proc_type;
 type htc_sysfs_cpu_boost, fs_type, sysfs_type;
 type htc_sysfs_ksm, fs_type, sysfs_type;
 type htc_sysfs_camera, fs_type, sysfs_type;
+type a11_proc_vm, fs_type, proc_type;

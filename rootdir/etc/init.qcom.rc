@@ -23,6 +23,8 @@ on early-boot
     restorecon_recursive /sys/android_camera_awb_cal
     restorecon_recursive /sys/android_camera
     restorecon_recursive /sys/android_camera2
+    restorecon /sys/power/wake_lock
+    restorecon /sys/power/wake_unlock
 
 on post-fs-data
     # Recovery-created cache markers must use the platform cache label.
