@@ -215,6 +215,9 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf \
     libwpa_client
 
+# hardware/qcom-caf/wlan/wcnss-service installs to /vendor only when this is
+# true; vendor policy labels only vendor executables.
+PRODUCT_VENDOR_MOVE_ENABLED := true
 PRODUCT_PACKAGES += \
     libcurl \
     libwcnss_qmi \
