@@ -33,3 +33,5 @@ dontaudit cameraserver init:unix_stream_socket connectto;
 
 # C2D colour conversion and the image post-processing modules run on Adreno.
 allow a11_camera_daemon gpu_device:chr_file rw_file_perms;
+# Preview and capture buffers come from gralloc.
+allow a11_camera_daemon hal_graphics_allocator:fd use;
