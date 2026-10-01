@@ -18,6 +18,8 @@ on boot
 # wpa_supplicant copies its template configuration into /data/vendor/wifi/wpa
 # and opens its control sockets under wpa/sockets; it creates neither directory.
 on post-fs-data
+    # mm-qcamera-daemon creates its per-camera sockets here.
+    mkdir /data/vcam 0770 camera camera
     mkdir /data/vendor/wifi 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
