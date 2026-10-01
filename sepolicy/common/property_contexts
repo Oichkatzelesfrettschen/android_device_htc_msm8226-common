@@ -1,0 +1,4 @@
+
+# HTC camera daemon state
+htc.camera.               u:object_r:a11_camera_prop:s0
+camera.4k2k.enable        u:object_r:a11_camera_prop:s0
