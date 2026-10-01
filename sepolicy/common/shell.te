@@ -1,3 +1,2 @@
 userdebug_or_eng(`
-    allow shell kernel:system syslog_read;
 ')
