@@ -17,6 +17,13 @@ on boot
 
 # wpa_supplicant copies its template configuration into /data/vendor/wifi/wpa
 # and opens its control sockets under wpa/sockets; it creates neither directory.
+on early-boot
+    # ueventd relabels only /sys/devices; the HTC camera class directories sit
+    # at the sysfs root and take their labels from file_contexts here.
+    restorecon_recursive /sys/android_camera_awb_cal
+    restorecon_recursive /sys/android_camera
+    restorecon_recursive /sys/android_camera2
+
 on post-fs-data
     # Recovery-created cache markers must use the platform cache label.
     restorecon /cache/.version
