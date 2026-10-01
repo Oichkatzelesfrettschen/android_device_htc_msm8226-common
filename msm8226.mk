@@ -172,12 +172,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.power-service-qti
 
-# Preopt
+# Speed-preopt interactive apps to avoid startup JIT work on Cortex-A7.
+# common_mobile.mk speed-preopts the selected Go launcher; omit the unused
+# TrebuchetQuickStep entry so the list matches the installed launcher.
 PRODUCT_DEXPREOPT_SPEED_APPS += \
     Settings \
     Snap \
-    SystemUI \
-    TrebuchetQuickStep
+    SystemUI
 
 # RenderScript HAL
 PRODUCT_PACKAGES += \
@@ -214,6 +215,9 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf \
     libwpa_client
 
+# hardware/qcom-caf/wlan/wcnss-service installs to /vendor only when this is
+# true; vendor policy labels only vendor executables.
+PRODUCT_VENDOR_MOVE_ENABLED := true
 PRODUCT_PACKAGES += \
     libcurl \
     libwcnss_qmi \
