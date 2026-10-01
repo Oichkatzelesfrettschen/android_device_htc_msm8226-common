@@ -4,7 +4,7 @@
 /persist(/.*)?    u:object_r:persist_file:s0
 /tombstones    u:object_r:rootfs:s0
 /(vendor|system/vendor)/bin/mm-qcamera-daemon    u:object_r:a11_camera_daemon_exec:s0
-/data/vcam(/.*)?    u:object_r:a11_camera_socket:s0
+/data/vendor/c(/.*)?    u:object_r:a11_camera_socket:s0
 /dev/v4l-subdev[0-9]+    u:object_r:camera_device:s0
 /dev/media[0-9]+    u:object_r:camera_device:s0
 
