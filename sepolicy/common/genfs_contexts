@@ -3,3 +3,5 @@ genfscon proc /last_kmsg u:object_r:htc_proc_last_kmsg:s0
 genfscon sysfs /devices/platform/htc_battery/power_supply u:object_r:sysfs_batteryinfo:s0
 genfscon sysfs /devices/qpnp-bms- u:object_r:sysfs_batteryinfo:s0
 genfscon sysfs /devices/virtual/graphics u:object_r:htc_sysfs_graphics:s0
+genfscon sysfs /android_camera_awb_cal u:object_r:htc_sysfs_camera:s0
+genfscon sysfs /android_camera u:object_r:htc_sysfs_camera:s0
