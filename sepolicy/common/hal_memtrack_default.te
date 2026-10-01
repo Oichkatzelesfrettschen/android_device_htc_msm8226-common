@@ -1,0 +1,2 @@
+# The legacy memtrack implementation identifies processes through proc cmdline.
+r_dir_file(hal_memtrack_default, { servicemanager hwservicemanager idmap system_app })

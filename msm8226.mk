@@ -172,12 +172,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.power-service-qti
 
-# Preopt
+# Speed-preopt interactive apps to avoid startup JIT work on Cortex-A7.
+# common_mobile.mk speed-preopts the selected Go launcher; omit the unused
+# TrebuchetQuickStep entry so the list matches the installed launcher.
 PRODUCT_DEXPREOPT_SPEED_APPS += \
     Settings \
     Snap \
-    SystemUI \
-    TrebuchetQuickStep
+    SystemUI
 
 # RenderScript HAL
 PRODUCT_PACKAGES += \

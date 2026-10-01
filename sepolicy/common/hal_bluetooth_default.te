@@ -1,0 +1,1 @@
+allow hal_bluetooth_default htc_bt_smd_device:chr_file rw_file_perms;
