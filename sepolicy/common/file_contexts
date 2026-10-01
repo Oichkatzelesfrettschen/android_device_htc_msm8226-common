@@ -15,7 +15,7 @@
 /(vendor|system/vendor)/bin/hci_qcomm_init    u:object_r:htc_bluetooth_loader_exec:s0
 /(vendor|system/vendor)/bin/init\.qcom\.bt\.sh    u:object_r:htc_bluetooth_script_exec:s0
 /dev/wcnss_(ctrl|wlan)    u:object_r:htc_wcnss_device:s0
-/dev/smd3    u:object_r:htc_bt_smd_device:s0
+/dev/smd[23]    u:object_r:htc_bt_smd_device:s0
 /data/vendor/time(/.*)?    u:object_r:htc_time_data_file:s0
 
 # Linux 3.4 sysfs nodes also need labels for ueventd's coldboot restorecon.

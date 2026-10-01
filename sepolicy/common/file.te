@@ -13,3 +13,4 @@ type htc_time_data_file, file_type, data_file_type;
 type htc_proc_last_kmsg, fs_type, proc_type;
 type htc_sysfs_cpu_boost, fs_type, sysfs_type;
 type htc_sysfs_ksm, fs_type, sysfs_type;
+type htc_sysfs_camera, fs_type, sysfs_type;
