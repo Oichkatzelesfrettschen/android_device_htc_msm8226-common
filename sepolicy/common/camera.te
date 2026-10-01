@@ -30,3 +30,8 @@ allow cameraserver system_server:unix_stream_socket { read write getattr };
 # platform domain may not set; the write fails without effect on capture.
 dontaudit cameraserver property_socket:sock_file write;
 dontaudit cameraserver init:unix_stream_socket connectto;
+
+# C2D colour conversion and the image post-processing modules run on Adreno.
+allow a11_camera_daemon gpu_device:chr_file rw_file_perms;
+# Snap reads the exported camera properties the HAL publishes.
+get_prop(snap_app, exported_camera_prop)
