@@ -16,3 +16,17 @@ allow cameraserver a11_camera_socket:dir search;
 allow cameraserver a11_camera_socket:sock_file rw_file_perms;
 allow cameraserver a11_camera_daemon:unix_stream_socket connectto;
 allow cameraserver a11_camera_daemon:unix_dgram_socket sendto;
+
+# The daemon publishes sensor fuse identifiers and the 4K capability flag.
+type a11_camera_prop, property_type;
+set_prop(a11_camera_daemon, a11_camera_prop)
+
+# Preview buffers arrive as dmabuf descriptors from the HAL in cameraserver,
+# and the HAL exchanges state with system_server over its binder-passed socket.
+allow a11_camera_daemon cameraserver:fd use;
+allow cameraserver system_server:unix_stream_socket { read write getattr };
+
+# The HAL1 blob writes persist.camera.forceuseaudio, a vendor property that a
+# platform domain may not set; the write fails without effect on capture.
+dontaudit cameraserver property_socket:sock_file write;
+dontaudit cameraserver init:unix_stream_socket connectto;
