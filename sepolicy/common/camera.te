@@ -30,6 +30,3 @@ allow cameraserver system_server:unix_stream_socket { read write getattr };
 # platform domain may not set; the write fails without effect on capture.
 dontaudit cameraserver property_socket:sock_file write;
 dontaudit cameraserver init:unix_stream_socket connectto;
-
-# The legacy face-detection library carries text relocations.
-allow a11_camera_daemon vendor_file:file execmod;
