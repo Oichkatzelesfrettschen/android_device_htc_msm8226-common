@@ -1,0 +1,4 @@
+# The HTC HAL1 camera blob, loaded into cameraserver, reads motion data
+# through SensorManager.
+allow cameraserver sensorservice_service:service_manager find;
+binder_call(cameraserver, system_server)
