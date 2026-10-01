@@ -2,3 +2,10 @@
 # through SensorManager.
 allow cameraserver sensorservice_service:service_manager find;
 binder_call(cameraserver, system_server)
+
+# The HAL reads HTC white-balance calibration and sensor identity from
+# /sys/android_camera*, the daemon's published sensor properties, and the
+# SurfaceFlinger configstore; a failed calibration open aborts cameraserver.
+r_dir_file(cameraserver, htc_sysfs_camera)
+get_prop(cameraserver, a11_camera_prop)
+hal_client_domain(cameraserver, hal_configstore)
