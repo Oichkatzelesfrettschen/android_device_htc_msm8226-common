@@ -1,0 +1,10 @@
+type htc_timekeep, domain;
+type htc_timekeep_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(htc_timekeep)
+
+# timekeep restores the clock from the RTC and retained time adjustment.
+allow htc_timekeep self:capability sys_time;
+r_dir_file(htc_timekeep, sysfs_rtc)
+allow htc_timekeep htc_time_data_file:dir rw_dir_perms;
+allow htc_timekeep htc_time_data_file:file create_file_perms;
+get_prop(htc_timekeep, vendor_default_prop)

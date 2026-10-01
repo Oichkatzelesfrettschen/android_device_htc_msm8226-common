@@ -1,0 +1,5 @@
+get_prop(system_server, userspace_reboot_exported_prop)
+get_prop(system_server, userspace_reboot_config_prop)
+
+# bootstat and the boot-reason collector read the HTC last-kernel-log node.
+allow system_server htc_proc_last_kmsg:file r_file_perms;

@@ -1,0 +1,12 @@
+type htc_wcnss_service, domain;
+type htc_wcnss_service_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(htc_wcnss_service)
+
+# The built-in Pronto driver exchanges its startup configuration over WCNSS.
+allow htc_wcnss_service htc_wcnss_device:chr_file rw_file_perms;
+r_dir_file(htc_wcnss_service, htc_sysfs_socinfo)
+get_prop(htc_wcnss_service, exported_default_prop)
+get_prop(htc_wcnss_service, vendor_default_prop)
+
+# The WCNSS service reads its calibration from /efs.
+allow htc_wcnss_service efs_file:dir search;

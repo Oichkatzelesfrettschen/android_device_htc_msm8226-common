@@ -1,0 +1,6 @@
+# The legacy memtrack implementation identifies processes through proc cmdline.
+r_dir_file(hal_memtrack_default, { servicemanager hwservicemanager idmap system_app })
+
+# The legacy memtrack HAL reads every process cmdline while it scans memory
+# maps; process names are not needed for the GPU totals it reports.
+dontaudit hal_memtrack_default domain:file read;

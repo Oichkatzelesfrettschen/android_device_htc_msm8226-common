@@ -1,0 +1,42 @@
+# The legacy daemon receives kernel camera events and serves the HAL's sockets.
+type a11_camera_daemon, domain;
+type a11_camera_daemon_exec, exec_type, vendor_file_type, file_type;
+type a11_camera_socket, file_type, data_file_type;
+init_daemon_domain(a11_camera_daemon)
+
+allow a11_camera_daemon device:dir r_dir_perms;
+allow a11_camera_daemon { camera_device video_device ion_device }:chr_file rw_file_perms;
+allow a11_camera_daemon vendor_data_file:dir search;
+allow a11_camera_daemon a11_camera_socket:dir rw_dir_perms;
+allow a11_camera_daemon a11_camera_socket:sock_file create_file_perms;
+allow a11_camera_daemon self:unix_stream_socket create_stream_socket_perms;
+allow a11_camera_daemon self:unix_dgram_socket create_socket_perms;
+allow cameraserver vendor_data_file:dir search;
+allow cameraserver a11_camera_socket:dir search;
+allow cameraserver a11_camera_socket:sock_file rw_file_perms;
+allow cameraserver a11_camera_daemon:unix_stream_socket connectto;
+allow cameraserver a11_camera_daemon:unix_dgram_socket sendto;
+
+# The daemon publishes sensor fuse identifiers and the 4K capability flag.
+type a11_camera_prop, property_type;
+set_prop(a11_camera_daemon, a11_camera_prop)
+
+# Preview buffers arrive as dmabuf descriptors from the HAL in cameraserver,
+# and the HAL exchanges state with system_server over its binder-passed socket.
+allow a11_camera_daemon cameraserver:fd use;
+allow cameraserver system_server:unix_stream_socket { read write getattr };
+
+# The HAL1 blob writes persist.camera.forceuseaudio, a vendor property that a
+# platform domain may not set; the write fails without effect on capture.
+dontaudit cameraserver property_socket:sock_file write;
+dontaudit cameraserver init:unix_stream_socket connectto;
+
+# C2D colour conversion and the image post-processing modules run on Adreno.
+allow a11_camera_daemon gpu_device:chr_file rw_file_perms;
+# Preview and capture buffers come from gralloc.
+allow a11_camera_daemon hal_graphics_allocator:fd use;
+# The HAL logs the kernel version when it opens a camera.
+allow cameraserver proc_version:file r_file_perms;
+# Face recognition keeps an album at /data/fdAlbum; vendor domains may not
+# write the /data root, so the album stays in memory for the session.
+dontaudit a11_camera_daemon system_data_file:file write;

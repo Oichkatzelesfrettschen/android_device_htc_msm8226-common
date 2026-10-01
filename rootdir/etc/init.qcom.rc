@@ -17,10 +17,29 @@ on boot
 
 # wpa_supplicant copies its template configuration into /data/vendor/wifi/wpa
 # and opens its control sockets under wpa/sockets; it creates neither directory.
+on early-boot
+    # ueventd relabels only /sys/devices; the HTC camera class directories sit
+    # at the sysfs root and take their labels from file_contexts here.
+    restorecon_recursive /sys/android_camera_awb_cal
+    restorecon_recursive /sys/android_camera
+    restorecon_recursive /sys/android_camera2
+    restorecon /sys/power/wake_lock
+    restorecon /sys/power/wake_unlock
+
 on post-fs-data
+    # Recovery-created cache markers must use the platform cache label.
+    restorecon /cache/.version
+    # Label the QMUX directory before QCRIL binds its client sockets.
+    mkdir /dev/socket/qmux_radio 0770 radio radio
+    # mm-qcamera-daemon creates its per-camera sockets here.
+    mkdir /data/vendor/c 0770 camera camera
     mkdir /data/vendor/wifi 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
+
+on property:sys.boot_completed=1
+    # Recovery-created media markers must use the platform media label.
+    restorecon /data/media/0/TWRP/.twrps
 
 # HTC's radio daemons use the modem calibration partitions and QMI sockets.
 # They start only when persist.vendor.radio.start is 1: qmuxd opens the SMD
@@ -54,11 +73,18 @@ service netmgrd /vendor/bin/netmgrd
     group radio inet net_admin net_raw
     setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
 
-service wcnss-service /system/bin/wcnss_service
+service wcnss-service /vendor/bin/wcnss_service
     class late_start
     user system
     group system wifi radio diag
     oneshot
+
+# The HAL and daemon exchange V4L2 events and per-camera Unix sockets.
+service qcamerasvr /vendor/bin/mm-qcamera-daemon
+    class late_start
+    user camera
+    group camera system inet input graphics
+    setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
 
 # libbt-vendor sets bluetooth.hciattach=true on each enable and waits for
 # bluetooth.status=on before it opens the SMD transport. hci_qcomm_init imports
@@ -70,6 +96,7 @@ service hciattach /vendor/bin/sh /vendor/bin/init.qcom.bt.sh
     setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
     disabled
     oneshot
+    seclabel u:r:htc_bluetooth_loader:s0
 
 on property:bluetooth.hciattach=true
     start hciattach
