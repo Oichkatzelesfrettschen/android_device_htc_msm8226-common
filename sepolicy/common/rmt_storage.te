@@ -1,0 +1,23 @@
+type rmt_storage, domain;
+type rmt_storage_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(rmt_storage)
+
+# rmt_storage serves the modem's EFS copies and radio records over QMI.
+# Only those partitions carry a11_modem_efs_block_device.
+allow rmt_storage block_device:dir search;
+allow rmt_storage a11_modem_efs_block_device:blk_file rw_file_perms;
+wakelock_use(rmt_storage)
+
+# The transfer buffer is the rmtfs UIO region: the daemon finds it through
+# /sys/class/uio, reads its map, and maps /dev/uio0.
+r_dir_file(rmt_storage, a11_sysfs_uio)
+allow rmt_storage uio_device:chr_file { rw_file_perms map };
+# Raising the worker to the real-time I/O class needs CAP_SYS_ADMIN; the
+# daemon drops to its service user and group after opening the partitions.
+allow rmt_storage self:capability { setgid setuid sys_admin };
+# The modem reaches the EFS service through a QMI service socket on the
+# MSM IPC router (AF_MSM_IPC); its ioctls are the 0xC3 IPC_ROUTER range.
+allow rmt_storage self:socket create_socket_perms;
+allowxperm rmt_storage self:socket ioctl { 0xc300-0xc3ff };
+# It locates the partitions from the GPT on the whole-disk node, read only.
+allow rmt_storage a11_emmc_disk_block_device:blk_file r_file_perms;
