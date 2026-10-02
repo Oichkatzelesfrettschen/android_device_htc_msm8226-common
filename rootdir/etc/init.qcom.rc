@@ -29,8 +29,12 @@ on early-boot
 on post-fs-data
     # Recovery-created cache markers must use the platform cache label.
     restorecon /cache/.version
-    # Label the QMUX directory before QCRIL binds its client sockets.
+    # Label the QMUX directories before qmuxd listens in them and QCRIL, the
+    # GNSS HAL, audio, and Bluetooth bind their client sockets.
     mkdir /dev/socket/qmux_radio 0770 radio radio
+    mkdir /dev/socket/qmux_gps 0770 gps gps
+    mkdir /dev/socket/qmux_audio 0770 media audio
+    mkdir /dev/socket/qmux_bluetooth 0770 bluetooth bluetooth
     # mm-qcamera-daemon creates its per-camera sockets and the face
     # recognition album, which libmmcamera_imglib.so opens as /data/vendor/fa.
     mkdir /data/vendor/c 0770 camera camera

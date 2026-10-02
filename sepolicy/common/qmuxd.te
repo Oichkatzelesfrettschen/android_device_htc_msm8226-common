@@ -1,0 +1,26 @@
+type qmuxd, domain;
+type qmuxd_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(qmuxd)
+
+# qmuxd multiplexes QMI clients onto the modem's SMD control channels and
+# listens in the radio QMUX socket directory.
+allow qmuxd a11_smd_radio_device:chr_file rw_file_perms;
+allow qmuxd a11_sysfs_smdpkt:dir search;
+allow qmuxd a11_sysfs_smdpkt:file rw_file_perms;
+allow qmuxd htc_qmux_radio_socket:dir rw_dir_perms;
+allow qmuxd htc_qmux_radio_socket:sock_file create_file_perms;
+wakelock_use(qmuxd)
+
+# HTC qmuxd runs "reboot oem-98" through the shell when the modem stays
+# unreachable; the shell exec stays denied so a modem fault never reboots
+# the phone.
+dontaudit qmuxd shell_exec:file execute;
+
+# QCRIL, netmgrd, and the GNSS HAL reach the modem through qmuxd.
+unix_socket_connect(rild, htc_qmux_radio, qmuxd)
+unix_socket_connect(netmgrd, htc_qmux_radio, qmuxd)
+allow netmgrd htc_qmux_radio_socket:dir rw_dir_perms;
+allow netmgrd htc_qmux_radio_socket:sock_file create_file_perms;
+unix_socket_connect(hal_gnss_default, htc_qmux_radio, qmuxd)
+allow hal_gnss_default htc_qmux_radio_socket:dir rw_dir_perms;
+allow hal_gnss_default htc_qmux_radio_socket:sock_file create_file_perms;
