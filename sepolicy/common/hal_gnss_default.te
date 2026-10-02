@@ -1,3 +1,8 @@
 # The GNSS HAL reads the SoC identity to select its configuration.
 r_dir_file(hal_gnss_default, htc_sysfs_socinfo)
 vndbinder_use(hal_gnss_default)
+
+# libloc_api_v02.so finds the modem's location service through the MSM IPC
+# router (AF_MSM_IPC); its ioctls are the 0xC3 IPC_ROUTER range.
+allow hal_gnss_default self:socket create_socket_perms;
+allowxperm hal_gnss_default self:socket ioctl { 0xc300-0xc3ff };
