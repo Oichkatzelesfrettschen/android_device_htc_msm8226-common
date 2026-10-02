@@ -10,6 +10,15 @@ allow netmgrd self:netlink_socket create_socket_perms_no_ioctl;
 allow netmgrd self:udp_socket ioctl;
 allowxperm netmgrd self:udp_socket ioctl { 0x89f0-0x89ff };
 
+# init starts netmgrd as root; libdsutils' ds_change_user_cap keeps the
+# capability set across setgid and setuid to radio, and netmgrd aborts when
+# that change fails.
+allow netmgrd self:capability { setgid setuid };
+
+# The kernel interface module opens NETLINK_XFRM to install and flush the
+# IPsec SAs and policies the modem negotiates for a data call.
+allow netmgrd self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_read nlmsg_write };
+
 # Its module probes and /system/bin/sh helper scripts stay denied: the kernel
 # builds rmnet in, and vendor domains run no system binaries.
 dontaudit netmgrd self:capability { sys_module sys_resource };
