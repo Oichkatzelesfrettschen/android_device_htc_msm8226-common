@@ -139,7 +139,24 @@ XtraValidity queryXtraValidity()
 
 bool xtraValidityCurrent(const XtraValidity& validity, uint64_t nowUtc)
 {
-    return validity.known && nowUtc >= validity.startUtc &&
-            nowUtc - validity.startUtc <
-                    static_cast<uint64_t>(validity.durationHours) * 3600u;
+    if (!validity.known || nowUtc < validity.startUtc)
+        return false;
+    const uint64_t elapsed = nowUtc - validity.startUtc;
+    const uint64_t span = static_cast<uint64_t>(validity.durationHours) * 3600u;
+    if (elapsed < span)
+        return true;
+#ifdef XTRA_VALIDITY_ACCEPT_WEEK_ERA_ALIAS
+    /* A modem that resolves the file's 10-bit GPS week without the rollover
+       count dates the window whole 1024-week eras early, so the window
+       covers the wall clock modulo one era. The alias counts only for the
+       full 168-hour window of a generation 2 file; a window at the GPS
+       epoch carries no orbit data. */
+    const uint64_t kGpsEpochUtc = 315964800u;
+    const uint64_t kGpsWeekEraSeconds = 1024u * 7u * 24u * 3600u;
+    return validity.startUtc != kGpsEpochUtc &&
+            validity.durationHours >= 168u &&
+            elapsed % kGpsWeekEraSeconds < span;
+#else
+    return false;
+#endif
 }

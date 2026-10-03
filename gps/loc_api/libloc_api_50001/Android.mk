@@ -39,6 +39,13 @@ LOCAL_CFLAGS += \
      -D_ANDROID_ \
      -Wno-unused-parameter
 
+# A device whose modem dates an XTRA window whole 1024-week GPS eras early
+# sets TARGET_XTRA_ACCEPT_WEEK_ERA_ALIAS so the injection result counts that
+# window as current.
+ifeq ($(TARGET_XTRA_ACCEPT_WEEK_ERA_ALIAS),true)
+LOCAL_CFLAGS += -DXTRA_VALIDITY_ACCEPT_WEEK_ERA_ALIAS
+endif
+
 LOCAL_C_INCLUDES:= \
     $(TARGET_OUT_HEADERS)/gps.utils \
     $(TARGET_OUT_HEADERS)/libloc_core \

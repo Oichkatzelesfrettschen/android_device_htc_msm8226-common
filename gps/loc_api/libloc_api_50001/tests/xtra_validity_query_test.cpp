@@ -65,10 +65,42 @@ int main()
     window.known = false;
     expect(!xtraValidityCurrent(window, kStart), "unknown window is not current");
 
+    const uint64_t kEra = 619315200u;
+    XtraValidity alias = {true, true, 0, 0, kStart - kEra, 168};
+    XtraValidity twoEras = {true, true, 0, 0, kStart - 2u * kEra, 168};
+    XtraValidity shortAlias = {true, true, 0, 0, kStart - kEra, 24};
+    XtraValidity emptyAlias = {true, true, 0, 0, kStart - kEra, 0};
+    const uint64_t rollover = kGpsEpoch + 2u * kEra + 3600u;
+    expect(!xtraValidityCurrent(alias, kStart - 1u), "before the aliased start");
+    expect(!xtraValidityCurrent(alias, kStart + 168u * 3600u),
+           "aliased window end is not current");
+    expect(!xtraValidityCurrent(shortAlias, kStart + 25u * 3600u),
+           "after a short aliased window");
+    expect(!xtraValidityCurrent(emptyAlias, kStart), "empty aliased window");
+    expect(!xtraValidityCurrent(epoch, rollover),
+           "GPS-epoch default is not current in a rollover week");
+#ifdef XTRA_VALIDITY_ACCEPT_WEEK_ERA_ALIAS
+    expect(xtraValidityCurrent(alias, kStart), "aliased start is current");
+    expect(xtraValidityCurrent(alias, kStart + 168u * 3600u - 1u),
+           "aliased last second is current");
+    expect(xtraValidityCurrent(twoEras, kStart), "two-era alias is current");
+    expect(!xtraValidityCurrent(shortAlias, kStart),
+           "aliased window under 168 hours is not current");
+#else
+    expect(!xtraValidityCurrent(alias, kStart), "aliased window is not current");
+    expect(!xtraValidityCurrent(twoEras, kStart), "two-era alias is not current");
+    expect(xtraValidityCurrent(shortAlias, kStart - kEra),
+           "a short window covering the clock is current");
+#endif
+
     if (failures != 0) {
         std::fprintf(stderr, "%d XTRA validity query tests failed\n", failures);
         return 1;
     }
+#ifdef XTRA_VALIDITY_ACCEPT_WEEK_ERA_ALIAS
+    std::puts("XTRA validity query, modem failure, transport and era-alias window bounds passed");
+#else
     std::puts("XTRA validity query, modem failure, transport and window bounds passed");
+#endif
     return 0;
 }
