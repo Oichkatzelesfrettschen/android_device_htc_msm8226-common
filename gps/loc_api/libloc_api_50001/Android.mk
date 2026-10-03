@@ -20,6 +20,7 @@ LOCAL_SRC_FILES += \
     loc_eng.cpp \
     loc_eng_agps.cpp \
     loc_eng_xtra.cpp \
+    XtraValidityQuery.cpp \
     loc_eng_ni.cpp \
     loc_eng_log.cpp \
     loc_eng_nmea.cpp \
@@ -38,10 +39,18 @@ LOCAL_CFLAGS += \
      -D_ANDROID_ \
      -Wno-unused-parameter
 
+# A device whose modem dates an XTRA window whole 1024-week GPS eras early
+# sets TARGET_XTRA_ACCEPT_WEEK_ERA_ALIAS so the injection result counts that
+# window as current.
+ifeq ($(TARGET_XTRA_ACCEPT_WEEK_ERA_ALIAS),true)
+LOCAL_CFLAGS += -DXTRA_VALIDITY_ACCEPT_WEEK_ERA_ALIAS
+endif
+
 LOCAL_C_INCLUDES:= \
     $(TARGET_OUT_HEADERS)/gps.utils \
     $(TARGET_OUT_HEADERS)/libloc_core \
     $(LOCAL_PATH) \
+    $(LOCAL_PATH)/../loc_api_v02 \
     $(TARGET_OUT_HEADERS)/libflp
 
 LOCAL_HEADER_LIBRARIES := libgps.utils_headers libloc_core_headers
