@@ -1,3 +1,10 @@
 # Linux 3.4 requests personality-8 for ARM binaries even with modprobe disabled.
 # SELinux system permissions cannot distinguish individual module names.
 dontaudit domain kernel:system module_request;
+
+# build/make/core/config.mk sets PRODUCT_COMPATIBLE_PROPERTY false for a
+# PRODUCT_SHIPPING_API_LEVEL of 27 or lower, so the compatible_property_only
+# grant of exported_camera_prop in system/sepolicy/private/domain.te is absent.
+# SystemServer, CameraManager, and CameraUtils read config.disable_cameraservice
+# (exported_camera_prop); the same domain set receives the read here.
+get_prop({ coredomain appdomain shell }, exported_camera_prop)
