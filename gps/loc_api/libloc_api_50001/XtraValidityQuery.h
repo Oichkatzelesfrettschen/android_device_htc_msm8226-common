@@ -14,7 +14,9 @@ struct XtraValidity {
 
 XtraValidity queryXtraValidity();
 
-// True when the window the modem holds covers nowUtc.
+// True when the window the modem holds covers nowUtc; with
+// XTRA_VALIDITY_ACCEPT_WEEK_ERA_ALIAS, also when it covers nowUtc a whole
+// number of 1024-week GPS eras later.
 bool xtraValidityCurrent(const XtraValidity& validity, uint64_t nowUtc);
 
 #endif
