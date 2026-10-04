@@ -127,11 +127,6 @@ PRODUCT_PACKAGES += \
     android.hardware.keymaster@3.0-impl \
     android.hardware.keymaster@3.0-service
 
-# OpenCL: apps reach the Adreno ICD in /vendor/lib through the vendor public
-# library list, which adds libOpenCL.so to every app's linker namespace.
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
-
 # LiveDisplay
 PRODUCT_PACKAGES += \
 
@@ -164,6 +159,11 @@ PRODUCT_PACKAGES += \
     libOmxVdec \
     libOmxVenc \
     libstagefrighthw
+
+# OpenCL: apps reach the Adreno ICD in /vendor/lib through the vendor public
+# library list, which adds libOpenCL.so to every app's linker namespace.
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
 
 # Sensors: the multihal loads the sub-HALs listed in
 # /vendor/etc/sensors/_hals.conf; with no list it serves ISensors with no
