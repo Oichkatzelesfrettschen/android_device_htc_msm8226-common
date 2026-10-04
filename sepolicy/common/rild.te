@@ -1,6 +1,6 @@
 # QCRIL maintains its database and SQLite journals in the radio data directory.
-allow rild radio_data_file:dir rw_dir_perms;
-allow rild radio_data_file:file create_file_perms;
+allow rild radio_core_data_file:dir rw_dir_perms;
+allow rild radio_core_data_file:file create_file_perms;
 
 # QMUX clients bind dynamically named sockets inside the radio socket directory.
 allow rild htc_qmux_radio_socket:dir rw_dir_perms;
