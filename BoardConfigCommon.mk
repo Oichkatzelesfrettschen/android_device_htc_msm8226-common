@@ -81,6 +81,10 @@ DEVICE_MATRIX_FILE := device/htc/msm8226-common/compatibility_matrix.xml
 PRODUCT_ENFORCE_VINTF_MANIFEST_OVERRIDE := true
 
 # Kernel
+# vendor/lineage 19.1 builds the kernel with its prebuilt Clang 12 unless
+# this is false; the shipping a11 kernel is built and booted with the
+# arm-linux-androideabi GCC 4.9 prebuilt.
+TARGET_KERNEL_CLANG_COMPILE := false
 TARGET_KERNEL_ADDITIONAL_FLAGS := \
     -j2 HOSTCFLAGS="-fcommon -Werror" KCFLAGS=-Werror LDFLAGS=--fatal-warnings
 
