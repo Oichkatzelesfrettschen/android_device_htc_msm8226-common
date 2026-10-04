@@ -128,6 +128,10 @@ PRODUCT_PACKAGES += \
     android.hardware.keymaster@3.0-impl \
     android.hardware.keymaster@3.0-service
 
+# Lights: the amber and green LEDs and the panel backlight, driven from sysfs.
+PRODUCT_PACKAGES += \
+    android.hardware.light@2.0-service.htc_msm8226
+
 # LiveDisplay
 PRODUCT_PACKAGES += \
 
@@ -206,6 +210,13 @@ PRODUCT_PACKAGES += \
 # USB
 PRODUCT_PACKAGES += \
     android.hardware.usb@1.0-service.basic
+
+# Vibrator: the passthrough HAL loads vibrator.default, which writes
+# /sys/class/timed_output/vibrator/enable.
+PRODUCT_PACKAGES += \
+    android.hardware.vibrator@1.0-impl \
+    android.hardware.vibrator@1.0-service \
+    vibrator.default
 
 # VNDK
 PRODUCT_COPY_FILES += \
