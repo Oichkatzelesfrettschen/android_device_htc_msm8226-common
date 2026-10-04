@@ -80,6 +80,12 @@ DEVICE_MANIFEST_FILE := device/htc/msm8226-common/manifest.xml
 DEVICE_MATRIX_FILE := device/htc/msm8226-common/compatibility_matrix.xml
 PRODUCT_ENFORCE_VINTF_MANIFEST_OVERRIDE := true
 
+# Build
+# The HTC vendor blobs install through PRODUCT_COPY_FILES from
+# vendor/htc/a11chl; Android 12's check-elf-prebuilt-product-copy-files
+# rejects ELF files there unless this is set.
+BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
+
 # Kernel
 # vendor/lineage 19.1 builds the kernel with its prebuilt Clang 12 unless
 # this is false; the shipping a11 kernel is built and booted with the
