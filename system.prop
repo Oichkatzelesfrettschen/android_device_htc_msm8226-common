@@ -1,7 +1,4 @@
 # Audio
-audio.offload.buffer.size.kb=32
-audio.offload.gapless.enabled=false
-av.offload.enable=true
 ro.af.client_heap_size_kbyte=7168
 ro.audio.flinger_standbytime_ms=300
 
@@ -28,25 +25,18 @@ dalvik.vm.dex2oat-threads=1
 dalvik.vm.boot-dex2oat-threads=1
 dalvik.vm.restore-dex2oat-threads=1
 pm.dexopt.first-boot=quicken
-pm.dexopt.boot=verify
 pm.dexopt.install=speed-profile
 
-# Linux 3.4 uses the in-kernel LMK interface and framework minfree targets.
-# Disable PSI selection and retain minfree semantics for vmpressure monitoring.
-ro.lmk.use_psi=false
-ro.lmk.use_minfree_levels=true
+# Linux 3.4 kills through the in-kernel LMK, which lmkd selects because
+# /sys/module/lowmemorykiller/parameters/minfree is writable. Nothing reads
+# per-app memcg soft limits in that mode, so app processes stay in the root
+# memcg instead of one 3.4 memcg each.
+ro.config.per_app_memcg=false
 
 # Display
-ro.hdcp2.rx=tz
-ro.qualcomm.cabl=1
-ro.secwvk=144
-debug.sf.disable_backpressure=1
 debug.sf.latch_unsignaled=1
-debug.sf.recomputecrop=0
-debug.egl.hw=1
 debug.composition.type=c2d
 debug.disable.bwc=1
-dev.pm.dyn_samplingrate=1
 
 # fastbootd
 ro.fastbootd.available=true
@@ -54,11 +44,3 @@ ro.fastbootd.available=true
 # GL
 ro.opengles.version=196608
 
-# Graphics
-persist.graphics.vulkan.disable=true
-
-# Memory optimizations
-ro.vendor.qti.sys.fw.bservice_enable=true
-
-# Time
-persist.timed.enable=true
