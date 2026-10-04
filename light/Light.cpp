@@ -154,8 +154,10 @@ void Light::setSpeakerLightLocked(const LightState& state) {
     if ((colorRGB >> 8) & 0xff) color = LED_GREEN;
     if ((colorRGB >> 16) & 0xff) color = LED_AMBER;
     if (((colorRGB >> 8) & 0xff) > ((colorRGB >> 16) & 0xff)) color = LED_GREEN;
+    // The LEDs are amber and green; a blue-only color lights green.
+    if (color == LED_BLANK && (colorRGB & 0xff)) color = LED_GREEN;
 
-    if (localState.flashMode == Flash::TIMED) {
+    if (localState.flashMode == Flash::TIMED || localState.flashMode == Flash::HARDWARE) {
         // make sure to blink by default regardless of timing
         blinkMode = BLINK_MODE_NORMAL;
     }
@@ -173,6 +175,7 @@ void Light::setSpeakerLightLocked(const LightState& state) {
     }
 
     switch (localState.flashMode) {
+        case Flash::HARDWARE:
         case Flash::TIMED:
             switch (color) {
                 case LED_AMBER:
@@ -233,6 +236,7 @@ void Light::setSpeakerLightLockedDual(const LightState& batteryState,
 
     if ((colorRGB >> 8) & 0xff) color = LED_GREEN;
     if ((colorRGB >> 16) & 0xff) color = LED_AMBER;
+    if (color == LED_BLANK && (colorRGB & 0xff)) color = LED_GREEN;
 
     switch (color) {
         case LED_AMBER:

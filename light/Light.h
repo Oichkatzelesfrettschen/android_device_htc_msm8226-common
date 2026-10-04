@@ -54,9 +54,9 @@ private:
     std::ofstream mAmberBlink;
     std::ofstream mGreenBlink;
 
-    LightState mAttentionState;
-    LightState mBatteryState;
-    LightState mNotificationState;
+    LightState mAttentionState{};
+    LightState mBatteryState{};
+    LightState mNotificationState{};
 
     std::unordered_map<Type, std::function<void(const LightState&)>> mLights;
     std::mutex mLock;
