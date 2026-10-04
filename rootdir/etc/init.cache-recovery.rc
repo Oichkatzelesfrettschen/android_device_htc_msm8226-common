@@ -1,0 +1,12 @@
+# This file installs under /system/etc/init so its commands run in the init
+# domain. Commands from /vendor/etc/init run in vendor_init, whose policy
+# excludes core_data_file_type (cache_recovery_file, media_rw_data_file).
+#
+# The libselinux restorecon of init.rc (restorecon_recursive /cache) skips any
+# directory whose security.restorecon_last digest matches file_contexts, so
+# files that recovery adds after the first labeled boot stay unlabeled. A
+# non-recursive restorecon of each path applies file_contexts unconditionally,
+# which gives the files the cache_recovery_file label that
+# RecoverySystem.handleAftermath() in system_server may unlink.
+on post-fs-data
+    restorecon /cache/recovery/log /cache/recovery/.version /cache/recovery/storage.fstab /cache/recovery/recovery.fstab
