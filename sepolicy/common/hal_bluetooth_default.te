@@ -1,1 +1,2 @@
 allow hal_bluetooth_default htc_bt_smd_device:chr_file rw_file_perms;
+get_prop(hal_bluetooth_default, htc_bluetooth_status_prop)

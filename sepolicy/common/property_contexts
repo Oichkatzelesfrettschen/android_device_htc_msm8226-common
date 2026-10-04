@@ -2,3 +2,6 @@
 # HTC camera daemon state
 htc.camera.               u:object_r:a11_camera_prop:s0
 camera.4k2k.enable        u:object_r:a11_camera_prop:s0
+
+# HTC Bluetooth bring-up state, read by libbt-vendor
+bluetooth.status          u:object_r:htc_bluetooth_status_prop:s0 exact string
