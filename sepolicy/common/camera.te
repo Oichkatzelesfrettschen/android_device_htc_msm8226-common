@@ -18,7 +18,7 @@ allow cameraserver a11_camera_daemon:unix_stream_socket connectto;
 allow cameraserver a11_camera_daemon:unix_dgram_socket sendto;
 
 # The daemon publishes sensor fuse identifiers and the 4K capability flag.
-type a11_camera_prop, property_type;
+vendor_public_prop(a11_camera_prop)
 set_prop(a11_camera_daemon, a11_camera_prop)
 
 # Preview buffers arrive as dmabuf descriptors from the HAL in cameraserver,
