@@ -5,6 +5,10 @@ av.offload.enable=true
 ro.af.client_heap_size_kbyte=7168
 ro.audio.flinger_standbytime_ms=300
 
+# BPF: Linux 3.4 has no bpf(2). bpfloader skips its programs and netd starts
+# without its TrafficController when this reads false.
+ro.kernel.ebpf.supported=false
+
 # Bluetooth
 bluetooth.enable_timeout_ms=12000
 
