@@ -1,0 +1,5 @@
+# The panel backlight and the amber and green LEDs all sit under
+# /sys/devices/.../leds/<name>, labeled sysfs_leds by file_contexts; the HAL
+# writes brightness and blink.
+r_dir_file(hal_light_default, sysfs_leds)
+allow hal_light_default sysfs_leds:file w_file_perms;
