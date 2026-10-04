@@ -35,6 +35,9 @@ ro.config.per_app_memcg=false
 
 # Display
 debug.sf.latch_unsignaled=1
+# SkiaGL RenderEngine aborts in SurfaceFlinger on the Adreno 305 GLES
+# driver ("Unable to generate SkImage"); the GLES RenderEngine composites.
+debug.renderengine.backend=gles
 debug.composition.type=c2d
 debug.disable.bwc=1
 
