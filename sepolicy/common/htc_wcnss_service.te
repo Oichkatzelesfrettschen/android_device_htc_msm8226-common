@@ -11,5 +11,5 @@ get_prop(htc_wcnss_service, vendor_default_prop)
 # The WCNSS service reads its calibration from /efs.
 allow htc_wcnss_service efs_file:dir search;
 
-# The WCNSS service reads persist.sys.dynamic.nv from the system namespace.
-get_prop(htc_wcnss_service, system_prop)
+# The WCNSS service reads its dynamic NV switch.
+get_prop(htc_wcnss_service, a11_wlan_config_prop)

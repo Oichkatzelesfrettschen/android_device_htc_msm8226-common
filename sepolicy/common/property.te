@@ -4,5 +4,6 @@
 vendor_internal_prop(a11_radio_config_prop)
 vendor_internal_prop(a11_display_config_prop)
 vendor_internal_prop(a11_media_config_prop)
+vendor_internal_prop(a11_wlan_config_prop)
 vendor_internal_prop(htc_bluetooth_config_prop)
 vendor_internal_prop(htc_bluetooth_hciattach_prop)
