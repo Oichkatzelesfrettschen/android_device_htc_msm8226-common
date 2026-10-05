@@ -23,3 +23,6 @@ allow netmgrd self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_read
 # builds rmnet in, and vendor domains run no system binaries.
 dontaudit netmgrd self:capability { sys_module sys_resource };
 dontaudit netmgrd shell_exec:file execute;
+
+# netmgrd reads its QoS, iWLAN and log configuration and the baseband type.
+get_prop(netmgrd, a11_radio_config_prop)

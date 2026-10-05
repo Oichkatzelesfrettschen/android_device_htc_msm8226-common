@@ -6,3 +6,6 @@ allow rild radio_core_data_file:file create_file_perms;
 allow rild htc_qmux_radio_socket:dir rw_dir_perms;
 allow rild htc_qmux_radio_socket:sock_file { create setattr getattr read write unlink };
 type_transition rild htc_qmux_radio_socket:sock_file htc_qmux_radio_socket;
+
+# QCRIL reads its data-call, LTE band and PDN configuration.
+get_prop(rild, a11_radio_config_prop)

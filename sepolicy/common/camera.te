@@ -47,3 +47,6 @@ type_transition a11_camera_daemon a11_camera_socket:file a11_camera_album_file "
 # algorithm reads the flashlight's current limit and dual-LED capability.
 r_dir_file(a11_camera_daemon, htc_sysfs_camera)
 r_dir_file(a11_camera_daemon, sysfs_leds)
+
+# The imaging libraries read their tuning and debug switches.
+get_prop(a11_camera_daemon, a11_camera_prop)

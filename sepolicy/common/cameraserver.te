@@ -9,3 +9,6 @@ binder_call(cameraserver, system_server)
 r_dir_file(cameraserver, htc_sysfs_camera)
 get_prop(cameraserver, a11_camera_prop)
 hal_client_domain(cameraserver, hal_configstore)
+
+# The camera provider libraries read ro.vendor.camera.* settings.
+get_prop(cameraserver, vendor_default_prop)

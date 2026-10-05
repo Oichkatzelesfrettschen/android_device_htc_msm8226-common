@@ -1,0 +1,2 @@
+# The audio HAL client libraries read vendor.audio.* settings.
+get_prop(audioserver, vendor_default_prop)
