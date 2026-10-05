@@ -3,4 +3,5 @@ r_dir_file(hal_memtrack_default, { servicemanager hwservicemanager idmap system_
 
 # The legacy memtrack HAL reads every process cmdline while it scans memory
 # maps; process names are not needed for the GPU totals it reports.
-dontaudit hal_memtrack_default domain:file read;
+dontaudit hal_memtrack_default domain:dir search;
+dontaudit hal_memtrack_default domain:file { getattr open read };

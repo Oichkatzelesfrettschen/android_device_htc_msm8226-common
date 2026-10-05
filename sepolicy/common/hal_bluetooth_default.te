@@ -1,2 +1,7 @@
 allow hal_bluetooth_default htc_bt_smd_device:chr_file rw_file_perms;
 get_prop(hal_bluetooth_default, htc_bluetooth_status_prop)
+
+# libbt-vendor reads its transport, requests the SoC loader through
+# bluetooth.hciattach, and waits for bluetooth.status.
+get_prop(hal_bluetooth_default, htc_bluetooth_config_prop)
+set_prop(hal_bluetooth_default, htc_bluetooth_hciattach_prop)

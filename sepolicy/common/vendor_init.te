@@ -1,3 +1,9 @@
 # init.a11chl.rc sets swap preference and byte-based dirty writeback limits.
 allow vendor_init a11_proc_vm:file w_file_perms;
 allow vendor_init proc_page_cluster:file w_file_perms;
+
+# init.qcom.rc triggers the loader on bluetooth.hciattach and clears
+# bluetooth.status when the HAL releases it. Init keeps a vendor trigger only
+# when vendor_init can read its property.
+get_prop(vendor_init, htc_bluetooth_hciattach_prop)
+set_prop(vendor_init, htc_bluetooth_status_prop)

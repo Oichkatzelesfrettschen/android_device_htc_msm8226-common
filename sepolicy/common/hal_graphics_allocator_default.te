@@ -1,0 +1,2 @@
+# gralloc reads ro.graphics.memory through libgsl.
+get_prop(hal_graphics_allocator_default, a11_display_config_prop)

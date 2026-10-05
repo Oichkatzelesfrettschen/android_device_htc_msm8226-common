@@ -6,3 +6,8 @@ vndbinder_use(hal_gnss_default)
 # router (AF_MSM_IPC); its ioctls are the 0xC3 IPC_ROUTER range.
 allow hal_gnss_default self:socket create_socket_perms;
 allowxperm hal_gnss_default self:socket ioctl { 0xc300-0xc3ff };
+
+# The location stack reads the baseband type and data configuration, and
+# the sys.qca1530 companion-chip switch from the system namespace.
+get_prop(hal_gnss_default, a11_radio_config_prop)
+get_prop(hal_gnss_default, system_prop)

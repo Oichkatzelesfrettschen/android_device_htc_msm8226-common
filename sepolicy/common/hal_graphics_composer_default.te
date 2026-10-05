@@ -14,3 +14,8 @@ allow hal_graphics_composer htc_sysfs_graphics:file w_file_perms;
 
 # The composer publishes display.qservice on vndbinder and looks it up again.
 allow hal_graphics_composer_default qdisplay_service:service_manager { add find };
+
+# The composer reads MDP composition switches and the system-namespace
+# hw.*, sys.hwc.* and persist.sys.actionsafe.* display settings.
+get_prop(hal_graphics_composer_default, a11_display_config_prop)
+get_prop(hal_graphics_composer_default, system_prop)
