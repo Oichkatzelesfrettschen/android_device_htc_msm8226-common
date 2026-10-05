@@ -65,3 +65,6 @@ ro.graphics.memory        u:object_r:a11_gsl_prop:s0 exact string
 # requests the SoC loader through bluetooth.hciattach.
 ro.qualcomm.bt.hci_transport u:object_r:htc_bluetooth_config_prop:s0 exact string
 bluetooth.hciattach       u:object_r:htc_bluetooth_hciattach_prop:s0 exact string
+# TimeKeep stores the offset between system time and the RTC, and the
+# native restore adds it back at boot.
+persist.vendor.timeadjust u:object_r:vendor_timekeep_prop:s0
