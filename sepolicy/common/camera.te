@@ -18,7 +18,7 @@ allow cameraserver a11_camera_daemon:unix_stream_socket connectto;
 allow cameraserver a11_camera_daemon:unix_dgram_socket sendto;
 
 # The daemon publishes sensor fuse identifiers and the 4K capability flag.
-type a11_camera_prop, property_type;
+vendor_public_prop(a11_camera_prop)
 set_prop(a11_camera_daemon, a11_camera_prop)
 
 # Preview buffers arrive as dmabuf descriptors from the HAL in cameraserver,
@@ -47,3 +47,6 @@ type_transition a11_camera_daemon a11_camera_socket:file a11_camera_album_file "
 # algorithm reads the flashlight's current limit and dual-LED capability.
 r_dir_file(a11_camera_daemon, htc_sysfs_camera)
 r_dir_file(a11_camera_daemon, sysfs_leds)
+
+# The imaging libraries read their tuning and debug switches.
+get_prop(a11_camera_daemon, a11_camera_prop)

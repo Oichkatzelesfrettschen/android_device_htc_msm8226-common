@@ -24,3 +24,7 @@ allow netmgrd htc_qmux_radio_socket:sock_file create_file_perms;
 unix_socket_connect(hal_gnss_default, htc_qmux_radio, qmuxd)
 allow hal_gnss_default htc_qmux_radio_socket:dir rw_dir_perms;
 allow hal_gnss_default htc_qmux_radio_socket:sock_file create_file_perms;
+
+# qmuxd reads the MSM baseband type, its data and log configuration, and its
+# persist.radio switches.
+get_prop(qmuxd, a11_radio_config_prop)

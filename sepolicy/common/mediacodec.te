@@ -1,0 +1,2 @@
+# The Venus OMX components read their decoder configuration.
+get_prop(mediacodec, a11_media_config_prop)

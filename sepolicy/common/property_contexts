@@ -2,3 +2,69 @@
 # HTC camera daemon state
 htc.camera.               u:object_r:a11_camera_prop:s0
 camera.4k2k.enable        u:object_r:a11_camera_prop:s0
+
+# HTC Bluetooth bring-up state, read by libbt-vendor
+bluetooth.status          u:object_r:htc_bluetooth_status_prop:s0 exact string
+
+# Modem, QMI data-call and QCRIL configuration read by rmt_storage, qmuxd,
+# netmgrd, rild and the GNSS HAL
+ro.baseband.arch          u:object_r:a11_radio_config_prop:s0 exact string
+ro.cid                    u:object_r:a11_radio_config_prop:s0 exact string
+ro.lean                   u:object_r:a11_radio_config_prop:s0 exact string
+ro.pdn.profile            u:object_r:a11_radio_config_prop:s0 exact string
+persist.data.             u:object_r:a11_radio_config_prop:s0
+persist.data_netmgrd_nint u:object_r:a11_radio_config_prop:s0 exact string
+persist.env.spec          u:object_r:a11_radio_config_prop:s0 exact string
+persist.lte.              u:object_r:a11_radio_config_prop:s0
+persist.net.logmask       u:object_r:a11_radio_config_prop:s0 exact string
+persist.qcril.            u:object_r:a11_radio_config_prop:s0
+persist.radio.enable.oem98 u:object_r:a11_radio_config_prop:s0 exact string
+persist.radio.MR_timeout  u:object_r:a11_radio_config_prop:s0 exact string
+persist.radio.sglte_csfb  u:object_r:a11_radio_config_prop:s0 exact string
+sys.qca1530               u:object_r:a11_radio_config_prop:s0 exact string
+
+# MDP composition and gralloc configuration read by the display HALs
+persist.hwc.              u:object_r:a11_display_config_prop:s0
+persist.metadata_dynfps.  u:object_r:a11_display_config_prop:s0
+persist.user.panel3D      u:object_r:a11_display_config_prop:s0 exact string
+ro.qcom.ad                u:object_r:a11_display_config_prop:s0 exact string
+hw.cabl.yuv               u:object_r:a11_display_config_prop:s0 exact string
+hw.hdmiON                 u:object_r:a11_display_config_prop:s0 exact string
+hw.hdmi.resolution        u:object_r:a11_display_config_prop:s0 exact string
+hw.underscan_supported    u:object_r:a11_display_config_prop:s0 exact string
+persist.sys.actionsafe.   u:object_r:a11_display_config_prop:s0
+persist.sys.wfd.virtual   u:object_r:a11_display_config_prop:s0 exact string
+sys.hwc.                  u:object_r:a11_display_config_prop:s0
+
+# WCNSS NV selection read by wcnss_service
+persist.sys.dynamic.nv    u:object_r:a11_wlan_config_prop:s0 exact string
+
+# Camera tuning read by the mm-camera daemon and its imaging libraries
+persist.assist_af.        u:object_r:a11_camera_prop:s0
+persist.awb.              u:object_r:a11_camera_prop:s0
+persist.camera.           u:object_r:a11_camera_prop:s0
+persist.iaf.              u:object_r:a11_camera_prop:s0
+persist.subcam            u:object_r:a11_camera_prop:s0
+qcom.cac                  u:object_r:a11_camera_prop:s0 exact string
+qcom.faceproc             u:object_r:a11_camera_prop:s0 exact string
+qcom.gen_frameproc        u:object_r:a11_camera_prop:s0 exact string
+qcom.hdr                  u:object_r:a11_camera_prop:s0 exact string
+qcom.wavelet              u:object_r:a11_camera_prop:s0 exact string
+ro.pagesize               u:object_r:a11_camera_prop:s0 exact string
+
+# Venus decoder configuration read by the OMX HAL
+media.codec               u:object_r:a11_media_config_prop:s0 exact string
+persist.vidc.             u:object_r:a11_media_config_prop:s0
+vidc.                     u:object_r:a11_media_config_prop:s0
+
+# libgsl, loaded by every process that draws through Adreno, reads its
+# memory budget.
+ro.graphics.memory        u:object_r:a11_gsl_prop:s0 exact string
+
+# libbt-vendor selects its transport from ro.qualcomm.bt.hci_transport and
+# requests the SoC loader through bluetooth.hciattach.
+ro.qualcomm.bt.hci_transport u:object_r:htc_bluetooth_config_prop:s0 exact string
+bluetooth.hciattach       u:object_r:htc_bluetooth_hciattach_prop:s0 exact string
+# TimeKeep stores the offset between system time and the RTC, and the
+# native restore adds it back at boot.
+persist.vendor.timeadjust u:object_r:vendor_timekeep_prop:s0

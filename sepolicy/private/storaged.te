@@ -1,0 +1,2 @@
+# storaged samples eMMC I/O counters from /sys/block/mmcblk0/stat.
+r_dir_file(storaged, htc_sysfs_disk_stat)

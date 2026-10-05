@@ -1,0 +1,3 @@
+# vold asks hwservicemanager for the boot control HAL to mark a boot
+# successful; the device has one slot and no boot control HAL.
+dontaudit vold hal_bootctl_hwservice:hwservice_manager find;
