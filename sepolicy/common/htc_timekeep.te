@@ -7,4 +7,4 @@ allow htc_timekeep self:capability sys_time;
 r_dir_file(htc_timekeep, sysfs_rtc)
 allow htc_timekeep htc_time_data_file:dir rw_dir_perms;
 allow htc_timekeep htc_time_data_file:file create_file_perms;
-get_prop(htc_timekeep, vendor_default_prop)
+set_prop(htc_timekeep, vendor_timekeep_prop)

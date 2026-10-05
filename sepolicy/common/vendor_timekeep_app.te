@@ -1,0 +1,11 @@
+# The TimeKeep receiver runs on time changes and at shutdown. It reads the RTC
+# count, stores the offset to system time in persist.vendor.timeadjust and
+# /data/vendor/time/ats_2, and the native restore adds it back at boot.
+type vendor_timekeep_app, domain;
+app_domain(vendor_timekeep_app)
+
+allow vendor_timekeep_app activity_service:service_manager find;
+allow vendor_timekeep_app htc_time_data_file:dir search;
+allow vendor_timekeep_app htc_time_data_file:file create_file_perms;
+r_dir_file(vendor_timekeep_app, sysfs_rtc)
+set_prop(vendor_timekeep_app, vendor_timekeep_prop)
