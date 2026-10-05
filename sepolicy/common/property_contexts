@@ -43,6 +43,8 @@ persist.sys.dynamic.nv    u:object_r:a11_wlan_config_prop:s0 exact string
 persist.assist_af.        u:object_r:a11_camera_prop:s0
 persist.awb.              u:object_r:a11_camera_prop:s0
 persist.camera.           u:object_r:a11_camera_prop:s0
+persist.camera.legacy_perf u:object_r:a11_camera_app_prop:s0 exact bool
+persist.vendor.camera.privapp.list u:object_r:a11_camera_app_prop:s0 exact string
 persist.iaf.              u:object_r:a11_camera_prop:s0
 persist.subcam            u:object_r:a11_camera_prop:s0
 qcom.cac                  u:object_r:a11_camera_prop:s0 exact string
@@ -68,3 +70,6 @@ bluetooth.hciattach       u:object_r:htc_bluetooth_hciattach_prop:s0 exact strin
 # TimeKeep stores the offset between system time and the RTC, and the
 # native restore adds it back at boot.
 persist.vendor.timeadjust u:object_r:vendor_timekeep_prop:s0
+# mm-qcamera-daemon reads the factory AWB and lens calibration results.
+mfg.calibration.status    u:object_r:a11_camera_prop:s0 exact string
+mfg.awb.calibration.      u:object_r:a11_camera_prop:s0
