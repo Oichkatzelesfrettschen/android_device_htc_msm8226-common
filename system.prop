@@ -39,6 +39,11 @@ debug.sf.latch_unsignaled=1
 # driver ("Unable to generate SkImage"); the GLES RenderEngine composites.
 debug.renderengine.backend=gles
 debug.composition.type=c2d
+# The Adreno 305 driver loses the undamaged pixels of one GMEM bin when HWUI
+# redraws only the damaged region of an aged buffer, so a scrolling view
+# shows that bin as static. HWUI redraws the whole surface every frame.
+debug.hwui.use_buffer_age=false
+debug.hwui.use_partial_updates=false
 debug.disable.bwc=1
 
 # fastbootd
