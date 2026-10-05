@@ -15,3 +15,5 @@ r_dir_file(htc_bluetooth_loader, htc_sysfs_bdaddress)
 # transport; the vendor property type keeps the HTC name the blob reads.
 vendor_internal_prop(htc_bluetooth_status_prop)
 set_prop(htc_bluetooth_loader, htc_bluetooth_status_prop)
+# hci_qcomm_init reads the transport the HAL selected.
+get_prop(htc_bluetooth_loader, htc_bluetooth_config_prop)

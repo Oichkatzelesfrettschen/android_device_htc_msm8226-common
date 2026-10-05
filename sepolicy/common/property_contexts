@@ -27,7 +27,6 @@ sys.qca1530               u:object_r:a11_radio_config_prop:s0 exact string
 persist.hwc.              u:object_r:a11_display_config_prop:s0
 persist.metadata_dynfps.  u:object_r:a11_display_config_prop:s0
 persist.user.panel3D      u:object_r:a11_display_config_prop:s0 exact string
-ro.graphics.memory        u:object_r:a11_display_config_prop:s0 exact string
 ro.qcom.ad                u:object_r:a11_display_config_prop:s0 exact string
 hw.cabl.yuv               u:object_r:a11_display_config_prop:s0 exact string
 hw.hdmiON                 u:object_r:a11_display_config_prop:s0 exact string
@@ -41,8 +40,10 @@ sys.hwc.                  u:object_r:a11_display_config_prop:s0
 persist.sys.dynamic.nv    u:object_r:a11_wlan_config_prop:s0 exact string
 
 # Camera tuning read by the mm-camera daemon and its imaging libraries
+persist.assist_af.        u:object_r:a11_camera_prop:s0
 persist.awb.              u:object_r:a11_camera_prop:s0
 persist.camera.           u:object_r:a11_camera_prop:s0
+persist.iaf.              u:object_r:a11_camera_prop:s0
 persist.subcam            u:object_r:a11_camera_prop:s0
 qcom.cac                  u:object_r:a11_camera_prop:s0 exact string
 qcom.faceproc             u:object_r:a11_camera_prop:s0 exact string
@@ -54,6 +55,11 @@ ro.pagesize               u:object_r:a11_camera_prop:s0 exact string
 # Venus decoder configuration read by the OMX HAL
 media.codec               u:object_r:a11_media_config_prop:s0 exact string
 persist.vidc.             u:object_r:a11_media_config_prop:s0
+vidc.                     u:object_r:a11_media_config_prop:s0
+
+# libgsl, loaded by every process that draws through Adreno, reads its
+# memory budget.
+ro.graphics.memory        u:object_r:a11_gsl_prop:s0 exact string
 
 # libbt-vendor selects its transport from ro.qualcomm.bt.hci_transport and
 # requests the SoC loader through bluetooth.hciattach.
