@@ -10,5 +10,6 @@ r_dir_file(cameraserver, htc_sysfs_camera)
 get_prop(cameraserver, a11_camera_prop)
 hal_client_domain(cameraserver, hal_configstore)
 
-# The camera provider libraries read ro.vendor.camera.* settings.
-get_prop(cameraserver, vendor_default_prop)
+# The camera provider libraries probe ro.vendor.camera.* settings the product
+# leaves unset, and an unset property reads as its default either way.
+dontaudit cameraserver vendor_default_prop:file { getattr map open read };
