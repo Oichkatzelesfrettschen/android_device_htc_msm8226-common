@@ -94,8 +94,15 @@ BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 # EABI target past the command-line CC. LD rather than LDFLAGS carries
 # --fatal-warnings, because a command-line LDFLAGS replaces the ARM linker
 # emulation arch/arm/Makefile adds for ld.lld.
+# The compiler is AOSP platform/prebuilts/clang/host/linux-x86 at tag
+# android-17.0.0_r1 (commit 29182889), directory clang-r584948, which the
+# LineageOS 19.1 manifest does not sync; kernel.mk's PATH would otherwise fall
+# through to whichever clang the host provides.
 TARGET_KERNEL_CLANG_COMPILE := true
 TARGET_KERNEL_CLANG_VERSION := r584948
+ifeq ($(wildcard prebuilts/clang/host/$(HOST_PREBUILT_TAG)/clang-$(TARGET_KERNEL_CLANG_VERSION)/bin/clang),)
+$(error prebuilts/clang/host/$(HOST_PREBUILT_TAG)/clang-$(TARGET_KERNEL_CLANG_VERSION) is absent: provision clang-$(TARGET_KERNEL_CLANG_VERSION) from AOSP platform/prebuilts/clang/host/linux-x86 android-17.0.0_r1 (29182889) there)
+endif
 KERNEL_LTO := thin
 TARGET_KERNEL_ADDITIONAL_FLAGS := \
     -j2 HOSTCFLAGS="-fcommon -Werror" KCFLAGS=-Werror \
