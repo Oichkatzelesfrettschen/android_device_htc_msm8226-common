@@ -118,7 +118,7 @@ TARGET_KERNEL_ADDITIONAL_FLAGS := \
 else
 TARGET_KERNEL_CLANG_COMPILE := false
 TARGET_KERNEL_ADDITIONAL_FLAGS := \
-    -j2 HOSTCFLAGS="-fcommon" HOSTLDFLAGS="-fuse-ld=lld" KCFLAGS=-Werror \
+    -j2 HOSTCFLAGS="-fcommon -Werror" HOSTLDFLAGS="-fuse-ld=lld" KCFLAGS=-Werror \
     LDFLAGS=--fatal-warnings
 endif
 
