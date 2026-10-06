@@ -147,8 +147,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += liba11-legacy-radio
 
 PRODUCT_PACKAGES += \
-    InProcessNetworkStack \
-    com.android.tethering.inprocess
+    InProcessNetworkStack
 
 # Offline Charger
 PRODUCT_PACKAGES += \
