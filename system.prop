@@ -51,6 +51,13 @@ dalvik.vm.restore-dex2oat-threads=1
 pm.dexopt.first-boot=quicken
 pm.dexopt.install=speed-profile
 
+# Build.HW_TIMEOUT_MULTIPLIER scales the ActivityManager process start,
+# bindApplication, broadcast and service timeouts and the Watchdog. Under
+# boot load on the 1.2 GHz Cortex-A7, com.android.phone needs more than the
+# 15 s bindApplication budget, and the persistent process then dies in a
+# startup-ANR loop that never registers the phone service.
+ro.hw_timeout_multiplier=3
+
 # 1 GiB product: low_ram selects the Go-class memory behavior in the framework
 # and in lmkd.
 ro.config.low_ram=true
