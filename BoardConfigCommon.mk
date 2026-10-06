@@ -55,6 +55,10 @@ BOARD_HAVE_BLUETOOTH := true
 
 # Camera
 TARGET_USES_MEDIA_EXTENSIONS := true
+# The HTC camera module is HALv1 only, and the 2.4 provider publishes its
+# cameras as HIDL device@1.0; frameworks/av serves those devices to Camera1
+# clients through CameraClient when this is set.
+$(call soong_config_set,camera,legacy_hal1,true)
 
 # Dexpreopt
 ifeq ($(HOST_OS),linux)

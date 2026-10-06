@@ -2,8 +2,8 @@
 # restarted wrapper finds no 1.0 slot1 service to wrap until rild registers
 # again.
 on property:init.svc.vendor.radio-1-4-legacy=restarting
-    stop ril-daemon
-    start ril-daemon
+    stop vendor.ril-daemon
+    start vendor.ril-daemon
 
 # lmkd drives the in-kernel low memory killer only when access(W_OK) on
 # minfree succeeds for its lmkd uid and system group. Its userspace mode

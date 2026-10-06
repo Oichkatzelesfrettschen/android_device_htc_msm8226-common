@@ -1,1 +1,4 @@
 get_prop(crash_dump, hwservicemanager_prop)
+# crash_dump symbolizes the crashing process's mappings, vendor shim
+# targets included.
+allow crash_dump vendor_shim_target_file:file r_file_perms;
