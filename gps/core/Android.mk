@@ -31,11 +31,13 @@ LOCAL_C_INCLUDES:= \
     $(TARGET_OUT_HEADERS)/gps.utils \
     $(TARGET_OUT_HEADERS)/libflp
 
-LOCAL_HEADER_LIBRARIES := libgps.utils_headers
+LOCAL_HEADER_LIBRARIES := libgps.utils_headers libhardware_headers
 
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := libloc_core_headers
 LOCAL_EXPORT_C_INCLUDE_DIRS := $(LOCAL_PATH)
+LOCAL_HEADER_LIBRARIES := libhardware_headers
+LOCAL_EXPORT_HEADER_LIBRARY_HEADERS := libhardware_headers
 include $(BUILD_HEADER_LIBRARY)
