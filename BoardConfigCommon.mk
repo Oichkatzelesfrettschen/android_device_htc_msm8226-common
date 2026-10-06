@@ -20,6 +20,11 @@ include device/samsung/qcom-common/BoardConfigCommon.mk
 # device/htc/msm8974-common gate on BOARD_VENDOR being htc.
 BOARD_VENDOR := htc
 
+# qcom-common quotes the pixel format, and soong_config.mk copies the quotes
+# into the JSON string of soong.<product>.extra.variables, which
+# product_config then fails to parse.
+TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
+
 # Non-A/B: build/make/core/board_config.mk defaults AB_OTA_UPDATER to true
 # for a device that leaves it unset, and the updater-script flow needs false.
 AB_OTA_UPDATER := false
