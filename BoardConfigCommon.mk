@@ -54,11 +54,7 @@ MALLOC_SVELTE := true
 BOARD_HAVE_BLUETOOTH := true
 
 # Camera
-# Android 11's camera provider owns framework camera services; the legacy
-# Lineage HAL1 policy selector assigns them to mediaserver instead.
-TARGET_NEEDS_LEGACY_CAMERA_HAL1_DYN_NATIVE_HANDLE := true
 TARGET_USES_MEDIA_EXTENSIONS := true
-TARGET_USES_NON_TREBLE_CAMERA := true
 
 # Dexpreopt
 ifeq ($(HOST_OS),linux)
@@ -169,7 +165,7 @@ BOARD_HOSTAPD_DRIVER             := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
 BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
-TARGET_USES_QCOM_WCNSS_QMI       := true
+TARGET_USES_QCOM_WCNSS_QMI       := false
 TARGET_USES_WCNSS_CTRL           := true
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
 # The Pronto WLAN driver is built into the kernel and initializes when the HAL

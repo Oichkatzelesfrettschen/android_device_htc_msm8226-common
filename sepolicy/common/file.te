@@ -18,5 +18,6 @@ type a11_proc_vm, fs_type, proc_type;
 type a11_modem_efs_block_device, dev_type;
 type a11_emmc_disk_block_device, dev_type;
 type a11_smd_radio_device, dev_type;
+type a11_qcril_device, dev_type;
 type a11_sysfs_uio, fs_type, sysfs_type;
 type a11_sysfs_smdpkt, fs_type, sysfs_type;
