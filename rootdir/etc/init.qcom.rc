@@ -46,6 +46,8 @@ on post-fs-data
     # Label the QMUX directories before qmuxd listens in them and QCRIL, the
     # GNSS HAL, audio, and Bluetooth bind their client sockets.
     mkdir /dev/socket/qmux_radio 0770 radio radio
+    # QCRIL keeps qcril.db in this tmpfs directory and rebuilds it each boot.
+    mkdir /dev/radio 0770 radio radio
     mkdir /dev/socket/qmux_gps 0770 gps gps
     mkdir /dev/socket/qmux_audio 0770 media audio
     mkdir /dev/socket/qmux_bluetooth 0770 bluetooth bluetooth
