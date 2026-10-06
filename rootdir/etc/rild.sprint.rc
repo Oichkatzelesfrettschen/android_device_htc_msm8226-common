@@ -1,5 +1,7 @@
 # The Sprint RIL needs its HTC QMI implementation and legacy logging ABI.
-service ril-daemon /vendor/bin/hw/rild -l /vendor/lib/libril-qc-qmi-1.so
+# hardware/ril installs rild.rc as vendor.ril-daemon; overriding that name
+# leaves one rild, the only one that registers IRadio/slot1.
+service vendor.ril-daemon /vendor/bin/hw/rild -l /vendor/lib/libril-qc-qmi-1.so
     override
     class main
     user radio
