@@ -189,6 +189,11 @@ PRODUCT_DEXPREOPT_SPEED_APPS += \
     Snap \
     SystemUI
 
+# Radio: the wrapper serves IRadio 1.4 to the framework and calls the IRadio
+# 1.0 HAL that rild registers for the same slot.
+PRODUCT_PACKAGES += \
+    android.hardware.radio@1.4-service.legacy
+
 # RenderScript HAL
 PRODUCT_PACKAGES += \
     android.hardware.renderscript@1.0-impl
