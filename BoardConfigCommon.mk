@@ -88,7 +88,7 @@ PRODUCT_ENFORCE_VINTF_MANIFEST_OVERRIDE := true
 
 # Build
 # The HTC vendor blobs install through PRODUCT_COPY_FILES from
-# vendor/htc/a11chl; Android 12's check-elf-prebuilt-product-copy-files
+# vendor/htc-a11chl; Android 12's check-elf-prebuilt-product-copy-files
 # rejects ELF files there unless this is set.
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 
@@ -176,4 +176,4 @@ WIFI_DRIVER_FW_PATH_AP           := "ap"
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
 
 # inherit from the proprietary version
-include vendor/htc/a11chl/BoardConfigVendor.mk
+include vendor/htc-a11chl/BoardConfigVendor.mk

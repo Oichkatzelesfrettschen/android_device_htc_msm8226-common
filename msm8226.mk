@@ -247,7 +247,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/wifi/hostapd_default.conf:$(TARGET_COPY_OUT_SYSTEM)/etc/hostapd/hostapd_default.conf
 
 # Get non-open-source specific aspects
-$(call inherit-product, vendor/htc/a11chl/a11chl-vendor.mk)
+$(call inherit-product, vendor/htc-a11chl/a11chl-vendor.mk)
 
 # common msm8226
 $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)
