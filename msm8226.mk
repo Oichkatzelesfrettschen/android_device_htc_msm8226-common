@@ -242,7 +242,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_VENDOR_MOVE_ENABLED := true
 PRODUCT_PACKAGES += \
     libcurl \
-    libwcnss_qmi \
     wcnss_service
 
 PRODUCT_COPY_FILES += \
