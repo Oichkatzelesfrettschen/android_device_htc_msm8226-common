@@ -94,6 +94,12 @@ PRODUCT_ENFORCE_VINTF_MANIFEST_OVERRIDE := true
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 
 # Kernel
+# The ramdisks are xz (plain LZMA2), which the kernel unpacks with
+# CONFIG_RD_XZ: a gzip recovery ramdisk puts recovery.img above its 16 MiB
+# partition. build/make/core/Makefile runs $(XZ) for BOARD_RAMDISK_USE_XZ and
+# nothing in the tree defines it.
+BOARD_RAMDISK_USE_XZ := true
+XZ := prebuilts/build-tools/$(HOST_PREBUILT_TAG)/bin/xz
 # The arm-linux-androideabi GCC 4.9 prebuilt builds the kernel by default.
 # A11_KERNEL_CLANG_THINLTO=true builds it with Android Clang 22
 # (clang-r584948) under LTO_CLANG_THIN: kernel.mk puts the clang directory
