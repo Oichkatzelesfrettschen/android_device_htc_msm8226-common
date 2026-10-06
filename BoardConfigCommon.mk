@@ -16,6 +16,10 @@
 # inherit from qcom-common
 include device/samsung/qcom-common/BoardConfigCommon.mk
 
+# qcom-common sets BOARD_VENDOR to samsung. Android.mk in this tree and in
+# device/htc/msm8974-common gate on BOARD_VENDOR being htc.
+BOARD_VENDOR := htc
+
 # Platform
 TARGET_BOARD_PLATFORM := msm8226
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno305
