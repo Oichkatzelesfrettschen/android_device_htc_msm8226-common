@@ -8,6 +8,7 @@
 /data/vendor/c/fdAlbum    u:object_r:a11_camera_album_file:s0
 /dev/v4l-subdev[0-9]+    u:object_r:camera_device:s0
 /dev/media[0-9]+    u:object_r:camera_device:s0
+/dev/jpeg[0-9]+     u:object_r:camera_device:s0
 
 /dev/kgsl-3d0    u:object_r:gpu_device:s0
 /dev/socket/qmux_(radio|gps|audio|bluetooth)(/.*)?    u:object_r:htc_qmux_radio_socket:s0
