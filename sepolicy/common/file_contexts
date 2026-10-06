@@ -77,3 +77,15 @@
 # Linux 3.4 sysfs takes no genfs labels outside ueventd's /sys/devices walk.
 /sys/power/wake_lock    u:object_r:sysfs_wake_lock:s0
 /sys/power/wake_unlock    u:object_r:sysfs_wake_lock:s0
+
+# SurfaceFlinger and every app process load the Adreno GLES driver and the
+# gralloc mapper in-process. Under the legacy linker configuration the default
+# namespace searches /system then /vendor, and core domains may read only the
+# vendor libraries labeled same_process_hal_file, so the driver's and
+# gralloc's dependencies that exist only in /vendor/lib carry that label.
+/(vendor|system/vendor)/lib/libgsl\.so                  u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib/libadreno_utils\.so         u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib/libsc-a3xx\.so              u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib/hw/gralloc\.msm8226\.so     u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib/libmemalloc\.so             u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib/libqdutils_gralloc\.so      u:object_r:same_process_hal_file:s0
