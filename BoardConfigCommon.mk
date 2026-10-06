@@ -87,12 +87,33 @@ PRODUCT_ENFORCE_VINTF_MANIFEST_OVERRIDE := true
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 
 # Kernel
-# vendor/lineage 19.1 builds the kernel with its prebuilt Clang 12 unless
-# this is false; the shipping a11 kernel is built and booted with the
-# arm-linux-androideabi GCC 4.9 prebuilt.
+# The arm-linux-androideabi GCC 4.9 prebuilt builds the kernel by default.
+# A11_KERNEL_CLANG_THINLTO=true builds it with Android Clang 22
+# (clang-r584948) under LTO_CLANG_THIN: kernel.mk puts the clang directory
+# first in PATH, passes CC="ccache clang" and sets LTO_CLANG_THIN from
+# KERNEL_LTO; LLVM=1 selects ld.lld and the LLVM binutils, and the kernel's
+# CLANG_FLAGS carry the ARM EABI target past the command-line CC. LD rather
+# than LDFLAGS carries --fatal-warnings there, because a command-line LDFLAGS
+# replaces the ARM linker emulation arch/arm/Makefile adds for ld.lld. The
+# compiler is AOSP platform/prebuilts/clang/host/linux-x86 at tag
+# android-17.0.0_r1 (commit 29182889), directory clang-r584948, which the
+# LineageOS manifest does not sync, so its absence stops the build rather
+# than letting PATH fall through to the host's clang.
+ifeq ($(A11_KERNEL_CLANG_THINLTO),true)
+TARGET_KERNEL_CLANG_COMPILE := true
+TARGET_KERNEL_CLANG_VERSION := r584948
+ifeq ($(wildcard prebuilts/clang/host/$(HOST_PREBUILT_TAG)/clang-$(TARGET_KERNEL_CLANG_VERSION)/bin/clang),)
+$(error prebuilts/clang/host/$(HOST_PREBUILT_TAG)/clang-$(TARGET_KERNEL_CLANG_VERSION) is absent: provision clang-$(TARGET_KERNEL_CLANG_VERSION) from AOSP platform/prebuilts/clang/host/linux-x86 android-17.0.0_r1 (29182889) there)
+endif
+KERNEL_LTO := thin
+TARGET_KERNEL_ADDITIONAL_FLAGS := \
+    -j2 HOSTCFLAGS="-fcommon -Werror" KCFLAGS=-Werror \
+    LLVM=1 LD="ld.lld --fatal-warnings"
+else
 TARGET_KERNEL_CLANG_COMPILE := false
 TARGET_KERNEL_ADDITIONAL_FLAGS := \
     -j2 HOSTCFLAGS="-fcommon -Werror" KCFLAGS=-Werror LDFLAGS=--fatal-warnings
+endif
 
 # Legacy memfd
 TARGET_HAS_MEMFD_BACKPORT := true
