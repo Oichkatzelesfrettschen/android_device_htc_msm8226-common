@@ -39,6 +39,8 @@ LOCAL_LDFLAGS += -Wl,--export-dynamic
 LOCAL_C_INCLUDES:= \
     $(LOCAL_PATH)/platform_lib_abstractions
 
+LOCAL_HEADER_LIBRARIES := libhardware_headers
+
 LOCAL_MODULE := libgps.utils
 LOCAL_PROPRIETARY_MODULE := true
 
