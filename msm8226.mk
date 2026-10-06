@@ -85,6 +85,7 @@ PRODUCT_PACKAGES += \
 # Camera
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
+    android.hardware.camera.provider@2.4-service \
     camera.device@1.0-impl \
     libxml2 \
     Aperture
@@ -242,7 +243,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_VENDOR_MOVE_ENABLED := true
 PRODUCT_PACKAGES += \
     libcurl \
-    libwcnss_qmi \
     wcnss_service
 
 PRODUCT_COPY_FILES += \

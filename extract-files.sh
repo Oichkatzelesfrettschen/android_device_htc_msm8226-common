@@ -41,4 +41,21 @@ export ANDROIDBP="${ANDROID_ROOT}/${OUTDIR}/Android.bp"
 export ANDROIDMK="${ANDROID_ROOT}/${OUTDIR}/Android.mk"
 export BOARDMK="${ANDROID_ROOT}/${OUTDIR}/BoardConfigVendor.mk"
 
+# The Sprint QCRIL opens its database at /data/misc/radio/qcril.db, a core
+# data path that vendor rild may not write under Treble. The fixup points it
+# at /dev/radio/qcril.db, the tmpfs directory init.qcom.rc creates, with the
+# six freed bytes zeroed so the string keeps its offset and length.
+function blob_fixup() {
+    case "${1}" in
+        vendor/lib/libril-qc-qmi-1.so)
+            [ "$2" = "" ] && return 0
+            sed -i 's|/data/misc/radio/qcril.db|/dev/radio/qcril.db\x00\x00\x00\x00\x00\x00|' "${2}"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+    return 0
+}
+
 extract "${MY_DIR}/common-proprietary-files.txt" "${SRC}"

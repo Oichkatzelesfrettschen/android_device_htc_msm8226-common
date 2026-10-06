@@ -20,6 +20,11 @@ include device/samsung/qcom-common/BoardConfigCommon.mk
 # device/htc/msm8974-common gate on BOARD_VENDOR being htc.
 BOARD_VENDOR := htc
 
+# qcom-common quotes the pixel format, and soong_config.mk copies the quotes
+# into the JSON string of soong.<product>.extra.variables, which
+# product_config then fails to parse.
+TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
+
 # Non-A/B: build/make/core/board_config.mk defaults AB_OTA_UPDATER to true
 # for a device that leaves it unset, and the updater-script flow needs false.
 AB_OTA_UPDATER := false
@@ -49,11 +54,7 @@ MALLOC_SVELTE := true
 BOARD_HAVE_BLUETOOTH := true
 
 # Camera
-# Android 11's camera provider owns framework camera services; the legacy
-# Lineage HAL1 policy selector assigns them to mediaserver instead.
-TARGET_NEEDS_LEGACY_CAMERA_HAL1_DYN_NATIVE_HANDLE := true
 TARGET_USES_MEDIA_EXTENSIONS := true
-TARGET_USES_NON_TREBLE_CAMERA := true
 
 # Dexpreopt
 ifeq ($(HOST_OS),linux)
@@ -93,6 +94,12 @@ PRODUCT_ENFORCE_VINTF_MANIFEST_OVERRIDE := true
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 
 # Kernel
+# The ramdisks are xz (plain LZMA2), which the kernel unpacks with
+# CONFIG_RD_XZ: a gzip recovery ramdisk puts recovery.img above its 16 MiB
+# partition. build/make/core/Makefile runs $(XZ) for BOARD_RAMDISK_USE_XZ and
+# nothing in the tree defines it.
+BOARD_RAMDISK_USE_XZ := true
+XZ := prebuilts/build-tools/$(HOST_PREBUILT_TAG)/bin/xz
 # The arm-linux-androideabi GCC 4.9 prebuilt builds the kernel by default.
 # A11_KERNEL_CLANG_THINLTO=true builds it with Android Clang 22
 # (clang-r584948) under LTO_CLANG_THIN: kernel.mk puts the clang directory
@@ -164,8 +171,7 @@ BOARD_HOSTAPD_DRIVER             := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
 BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
-TARGET_PROVIDES_WCNSS_QMI        := true
-TARGET_USES_QCOM_WCNSS_QMI       := true
+TARGET_USES_QCOM_WCNSS_QMI       := false
 TARGET_USES_WCNSS_CTRL           := true
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
 # The Pronto WLAN driver is built into the kernel and initializes when the HAL
