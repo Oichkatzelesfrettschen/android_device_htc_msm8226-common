@@ -33,6 +33,15 @@ bluetooth.profile.pan.nap.enabled=true
 bluetooth.profile.pan.panu.enabled=true
 bluetooth.profile.pbap.server.enabled=true
 
+# Camera: the HALv1 camera delivers recording frames as metadata whose
+# handle is valid only in the camera process; CameraSource uses
+# VIDEO_BUFFER_MODE_DATA_CALLBACK_YUV and ships pixels through shared memory
+# when record_force_yuv is set. With no API2 support reported by
+# ICameraService, CameraManager synthesizes LEGACY characteristics from the
+# HAL1 parameters through LegacyMetadataMapper when legacy_camera2_shim is set.
+ro.camera.record_force_yuv=true
+ro.camera.legacy_camera2_shim=true
+
 # Dalvik: 480x854 hdpi needs modest initial and retained free heaps; preserve
 # the Go 128 MiB growth limit and 256 MiB large-heap ceiling for app compatibility.
 dalvik.vm.heapstartsize=8m
