@@ -87,7 +87,7 @@ PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
     camera.device@1.0-impl \
     libxml2 \
-    Snap
+    Aperture
 
 # DRM
 PRODUCT_PACKAGES += \
@@ -187,7 +187,7 @@ PRODUCT_PACKAGES += \
 # TrebuchetQuickStep entry so the list matches the installed launcher.
 PRODUCT_DEXPREOPT_SPEED_APPS += \
     Settings \
-    Snap \
+    Aperture \
     SystemUI
 
 # Radio: the wrapper serves IRadio 1.4 to the framework and calls the IRadio
@@ -226,7 +226,6 @@ PRODUCT_PACKAGES += \
 # Wifi
 PRODUCT_PACKAGES += \
     android.hardware.wifi@1.0-service.legacy \
-    dhcpcd.conf \
     hostapd \
     wpa_supplicant \
     wpa_supplicant.conf \
