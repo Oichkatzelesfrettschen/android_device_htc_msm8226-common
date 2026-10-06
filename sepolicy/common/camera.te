@@ -11,11 +11,11 @@ allow a11_camera_daemon a11_camera_socket:dir rw_dir_perms;
 allow a11_camera_daemon a11_camera_socket:sock_file create_file_perms;
 allow a11_camera_daemon self:unix_stream_socket create_stream_socket_perms;
 allow a11_camera_daemon self:unix_dgram_socket create_socket_perms;
-allow cameraserver vendor_data_file:dir search;
-allow cameraserver a11_camera_socket:dir search;
-allow cameraserver a11_camera_socket:sock_file rw_file_perms;
-allow cameraserver a11_camera_daemon:unix_stream_socket connectto;
-allow cameraserver a11_camera_daemon:unix_dgram_socket sendto;
+allow hal_camera_default vendor_data_file:dir search;
+allow hal_camera_default a11_camera_socket:dir search;
+allow hal_camera_default a11_camera_socket:sock_file rw_file_perms;
+allow hal_camera_default a11_camera_daemon:unix_stream_socket connectto;
+allow hal_camera_default a11_camera_daemon:unix_dgram_socket sendto;
 
 # The daemon publishes sensor fuse identifiers and the 4K capability flag.
 vendor_public_prop(a11_camera_prop)
@@ -25,22 +25,21 @@ vendor_public_prop(a11_camera_app_prop)
 get_prop(appdomain, a11_camera_app_prop)
 set_prop(a11_camera_daemon, a11_camera_prop)
 
-# Preview buffers arrive as dmabuf descriptors from the HAL in cameraserver,
-# and the HAL exchanges state with system_server over its binder-passed socket.
-allow a11_camera_daemon cameraserver:fd use;
-allow cameraserver system_server:unix_stream_socket { read write getattr };
+# Preview buffers arrive as dmabuf descriptors from the HAL in the camera
+# provider.
+allow a11_camera_daemon hal_camera_default:fd use;
 
-# The HAL1 blob writes persist.camera.forceuseaudio, a vendor property that a
-# platform domain may not set; the write fails without effect on capture.
-dontaudit cameraserver property_socket:sock_file write;
-dontaudit cameraserver init:unix_stream_socket connectto;
+# The HAL1 blob writes persist.camera.forceuseaudio, a property no policy
+# declares; the write fails without effect on capture.
+dontaudit hal_camera_default property_socket:sock_file write;
+dontaudit hal_camera_default init:unix_stream_socket connectto;
 
 # C2D colour conversion and the image post-processing modules run on Adreno.
 allow a11_camera_daemon gpu_device:chr_file rw_file_perms;
 # Preview and capture buffers come from gralloc.
 allow a11_camera_daemon hal_graphics_allocator:fd use;
 # The HAL logs the kernel version when it opens a camera.
-allow cameraserver proc_version:file r_file_perms;
+allow hal_camera_default proc_version:file r_file_perms;
 # libmmcamera_imglib.so keeps the face recognition album at /data/vendor/fa,
 # a link to /data/vendor/c/fdAlbum.
 type a11_camera_album_file, file_type, data_file_type;
