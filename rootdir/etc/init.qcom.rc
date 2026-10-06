@@ -1,3 +1,10 @@
+# The radio 1.4 wrapper takes over rild's IRadio/slot1 registration, so a
+# restarted wrapper finds no 1.0 slot1 service to wrap until rild registers
+# again.
+on property:init.svc.vendor.radio-1-4-legacy=restarting
+    stop ril-daemon
+    start ril-daemon
+
 # HTC a11chl mounts the firmware partitions before vendor services use them.
 on fs
     mount_all /vendor/etc/fstab.qcom --early
