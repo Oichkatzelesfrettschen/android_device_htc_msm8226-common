@@ -34,6 +34,15 @@ source "${HELPER}"
 # Initialize the helper for common
 setup_vendor "${BOARD_COMMON}" "${VENDOR}" "${ANDROID_ROOT}" true
 
+# The a11chl blobs live at vendor/htc-a11chl, outside the vendor/htc project
+# other HTC device trees share. setup_vendor derives vendor/$VENDOR/$DEVICE,
+# so the output directory and the four files generated in it point there.
+export OUTDIR=vendor/htc-a11chl
+export PRODUCTMK="${ANDROID_ROOT}/${OUTDIR}/${BOARD_COMMON}-vendor.mk"
+export ANDROIDBP="${ANDROID_ROOT}/${OUTDIR}/Android.bp"
+export ANDROIDMK="${ANDROID_ROOT}/${OUTDIR}/Android.mk"
+export BOARDMK="${ANDROID_ROOT}/${OUTDIR}/BoardConfigVendor.mk"
+
 # Warning headers and guards
 write_headers "${BOARD}" "TARGET_BOARD_PLATFORM"
 

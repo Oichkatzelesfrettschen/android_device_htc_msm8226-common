@@ -27,6 +27,10 @@ dalvik.vm.restore-dex2oat-threads=1
 pm.dexopt.first-boot=quicken
 pm.dexopt.install=speed-profile
 
+# 1 GiB product: low_ram selects the Go-class memory behavior in the framework
+# and in lmkd.
+ro.config.low_ram=true
+
 # Linux 3.4 kills through the in-kernel LMK, which lmkd selects because
 # /sys/module/lowmemorykiller/parameters/minfree is writable. Nothing reads
 # per-app memcg soft limits in that mode, so app processes stay in the root

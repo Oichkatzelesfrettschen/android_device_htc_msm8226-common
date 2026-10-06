@@ -1,3 +1,19 @@
+# The radio 1.4 wrapper takes over rild's IRadio/slot1 registration, so a
+# restarted wrapper finds no 1.0 slot1 service to wrap until rild registers
+# again.
+on property:init.svc.vendor.radio-1-4-legacy=restarting
+    stop ril-daemon
+    start ril-daemon
+
+# lmkd drives the in-kernel low memory killer only when access(W_OK) on
+# minfree succeeds for its lmkd uid and system group. Its userspace mode
+# needs the per-node stats block that /proc/zoneinfo gains in Linux 4.8.
+on early-init
+    chown root system /sys/module/lowmemorykiller/parameters/adj
+    chmod 0664 /sys/module/lowmemorykiller/parameters/adj
+    chown root system /sys/module/lowmemorykiller/parameters/minfree
+    chmod 0664 /sys/module/lowmemorykiller/parameters/minfree
+
 # HTC a11chl mounts the firmware partitions before vendor services use them.
 on fs
     mount_all /vendor/etc/fstab.qcom --early

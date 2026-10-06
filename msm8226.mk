@@ -41,7 +41,9 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml \
     frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml
 
-# APEX
+# APEX: compressed APEX packages depend on dm-verity, so the product installs
+# its APEXes uncompressed.
+PRODUCT_COMPRESSED_APEX := false
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/ld.config.txt:$(TARGET_COPY_OUT_SYSTEM)/etc/swcodec/ld.config.txt
 
@@ -85,7 +87,7 @@ PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
     camera.device@1.0-impl \
     libxml2 \
-    Snap
+    Aperture
 
 # DRM
 PRODUCT_PACKAGES += \
@@ -145,8 +147,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += liba11-legacy-radio
 
 PRODUCT_PACKAGES += \
-    InProcessNetworkStack \
-    com.android.tethering.inprocess
+    InProcessNetworkStack
 
 # Offline Charger
 PRODUCT_PACKAGES += \
@@ -186,8 +187,13 @@ PRODUCT_PACKAGES += \
 # TrebuchetQuickStep entry so the list matches the installed launcher.
 PRODUCT_DEXPREOPT_SPEED_APPS += \
     Settings \
-    Snap \
+    Aperture \
     SystemUI
+
+# Radio: the wrapper serves IRadio 1.4 to the framework and calls the IRadio
+# 1.0 HAL that rild registers for the same slot.
+PRODUCT_PACKAGES += \
+    android.hardware.radio@1.4-service.legacy
 
 # RenderScript HAL
 PRODUCT_PACKAGES += \
@@ -208,7 +214,7 @@ PRODUCT_PACKAGES += \
 
 # USB
 PRODUCT_PACKAGES += \
-    android.hardware.usb@1.0-service.basic
+    android.hardware.usb@1.3-service.basic
 
 # Vibrator: the passthrough HAL loads vibrator.default, which writes
 # /sys/class/timed_output/vibrator/enable.
@@ -217,15 +223,9 @@ PRODUCT_PACKAGES += \
     android.hardware.vibrator@1.0-service \
     vibrator.default
 
-# VNDK
-PRODUCT_COPY_FILES += \
-    prebuilts/vndk/v29/arm/arch-arm-armv7-a-neon/shared/vndk-core/libprotobuf-cpp-lite.so:$(TARGET_COPY_OUT_VENDOR)/lib/libprotobuf-cpp-lite-v29.so \
-    prebuilts/vndk/v29/arm/arch-arm-armv7-a-neon/shared/vndk-sp/libcutils.so:$(TARGET_COPY_OUT_VENDOR)/lib/libcutils-v29.so
-
 # Wifi
 PRODUCT_PACKAGES += \
     android.hardware.wifi@1.0-service.legacy \
-    dhcpcd.conf \
     hostapd \
     wpa_supplicant \
     wpa_supplicant.conf \
@@ -245,7 +245,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/wifi/hostapd_default.conf:$(TARGET_COPY_OUT_SYSTEM)/etc/hostapd/hostapd_default.conf
 
 # Get non-open-source specific aspects
-$(call inherit-product, vendor/htc/a11chl/a11chl-vendor.mk)
+$(call inherit-product, vendor/htc-a11chl/a11chl-vendor.mk)
 
 # common msm8226
 $(call inherit-product, device/samsung/qcom-common/qcom-common.mk)

@@ -16,6 +16,14 @@
 # inherit from qcom-common
 include device/samsung/qcom-common/BoardConfigCommon.mk
 
+# qcom-common sets BOARD_VENDOR to samsung. Android.mk in this tree and in
+# device/htc/msm8974-common gate on BOARD_VENDOR being htc.
+BOARD_VENDOR := htc
+
+# Non-A/B: build/make/core/board_config.mk defaults AB_OTA_UPDATER to true
+# for a device that leaves it unset, and the updater-script flow needs false.
+AB_OTA_UPDATER := false
+
 # Platform
 TARGET_BOARD_PLATFORM := msm8226
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno305
@@ -36,9 +44,6 @@ BOARD_USES_ALSA_AUDIO := true
 
 # Bionic
 MALLOC_SVELTE := true
-
-# Binder API version
-TARGET_USES_64_BIT_BINDER := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
@@ -78,11 +83,12 @@ TARGET_FS_CONFIG_GEN := device/htc/msm8226-common/config.fs
 # HIDL
 DEVICE_MANIFEST_FILE := device/htc/msm8226-common/manifest.xml
 DEVICE_MATRIX_FILE := device/htc/msm8226-common/compatibility_matrix.xml
+DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += device/htc/msm8226-common/framework_compatibility_matrix.xml
 PRODUCT_ENFORCE_VINTF_MANIFEST_OVERRIDE := true
 
 # Build
 # The HTC vendor blobs install through PRODUCT_COPY_FILES from
-# vendor/htc/a11chl; Android 12's check-elf-prebuilt-product-copy-files
+# vendor/htc-a11chl; Android 12's check-elf-prebuilt-product-copy-files
 # rejects ELF files there unless this is set.
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 
@@ -112,7 +118,8 @@ TARGET_KERNEL_ADDITIONAL_FLAGS := \
 else
 TARGET_KERNEL_CLANG_COMPILE := false
 TARGET_KERNEL_ADDITIONAL_FLAGS := \
-    -j2 HOSTCFLAGS="-fcommon -Werror" KCFLAGS=-Werror LDFLAGS=--fatal-warnings
+    -j2 HOSTCFLAGS="-fcommon -Werror" HOSTLDFLAGS="-fuse-ld=lld" KCFLAGS=-Werror \
+    LDFLAGS=--fatal-warnings
 endif
 
 # Legacy memfd
@@ -169,4 +176,4 @@ WIFI_DRIVER_FW_PATH_AP           := "ap"
 WIFI_HIDL_UNIFIED_SUPPLICANT_SERVICE_RC_ENTRY := true
 
 # inherit from the proprietary version
-include vendor/htc/a11chl/BoardConfigVendor.mk
+include vendor/htc-a11chl/BoardConfigVendor.mk
