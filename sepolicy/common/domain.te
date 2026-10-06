@@ -8,3 +8,10 @@ dontaudit domain kernel:system module_request;
 # SystemServer, CameraManager, and CameraUtils read config.disable_cameraservice
 # (exported_camera_prop); the same domain set receives the read here.
 get_prop({ coredomain appdomain shell }, exported_camera_prop)
+
+# bionic's parse_LD_SHIM_LIBS calls access(R_OK) and realpath() on every
+# TARGET_LD_SHIM_LIBS target at each process start; Linux 3.4 reports the
+# access() probe as read rather than audit_access. A core domain keeps the
+# unresolved path, which is already canonical, so shim matching is unchanged,
+# and vendor domains read and map the targets through vendor_file_type.
+dontaudit domain { vendor_shim_target_file htc_bluetooth_loader_exec }:file { audit_access getattr read };
