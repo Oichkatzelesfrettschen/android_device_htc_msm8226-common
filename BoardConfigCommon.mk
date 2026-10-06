@@ -87,12 +87,19 @@ PRODUCT_ENFORCE_VINTF_MANIFEST_OVERRIDE := true
 BUILD_BROKEN_ELF_PREBUILT_PRODUCT_COPY_FILES := true
 
 # Kernel
-# vendor/lineage 19.1 builds the kernel with its prebuilt Clang 12 unless
-# this is false; the shipping a11 kernel is built and booted with the
-# arm-linux-androideabi GCC 4.9 prebuilt.
-TARGET_KERNEL_CLANG_COMPILE := false
+# The kernel builds with Android Clang 22 (clang-r584948) under
+# LTO_CLANG_THIN. kernel.mk puts the clang directory first in PATH, passes
+# CC="ccache clang" and sets LTO_CLANG_THIN from KERNEL_LTO; LLVM=1 selects
+# ld.lld and the LLVM binutils, and the kernel's CLANG_FLAGS carry the ARM
+# EABI target past the command-line CC. LD rather than LDFLAGS carries
+# --fatal-warnings, because a command-line LDFLAGS replaces the ARM linker
+# emulation arch/arm/Makefile adds for ld.lld.
+TARGET_KERNEL_CLANG_COMPILE := true
+TARGET_KERNEL_CLANG_VERSION := r584948
+KERNEL_LTO := thin
 TARGET_KERNEL_ADDITIONAL_FLAGS := \
-    -j2 HOSTCFLAGS="-fcommon -Werror" KCFLAGS=-Werror LDFLAGS=--fatal-warnings
+    -j2 HOSTCFLAGS="-fcommon -Werror" KCFLAGS=-Werror \
+    LLVM=1 LD="ld.lld --fatal-warnings"
 
 # Legacy memfd
 TARGET_HAS_MEMFD_BACKPORT := true
