@@ -43,6 +43,15 @@ on early-boot
     restorecon /sys/power/wake_unlock
 
 on post-fs-data
+    # The cpuset controller retains requested CPUs across hotplug, allowing
+    # child masks to regain every present CPU as each core returns online.
+    write /dev/cpuset/top-app/cpus 0-3
+    write /dev/cpuset/foreground/cpus 0-3
+    write /dev/cpuset/foreground_window/cpus 0-3
+    write /dev/cpuset/system-background/cpus 0-3
+    write /dev/cpuset/background/cpus 0-3
+    write /dev/cpuset/restricted/cpus 0-3
+    write /dev/cpuset/camera-daemon/cpus 0-3
     # Label the QMUX directories before qmuxd listens in them and QCRIL, the
     # GNSS HAL, audio, and Bluetooth bind their client sockets.
     mkdir /dev/socket/qmux_radio 0770 radio radio
