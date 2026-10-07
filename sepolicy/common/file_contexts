@@ -90,6 +90,13 @@
 /(vendor|system/vendor)/lib/libmemalloc\.so             u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib/libqdutils_gralloc\.so      u:object_r:same_process_hal_file:s0
 
+# The public OpenCL ICD is loaded by its SONAME from an ordinary app namespace.
+/(vendor|system/vendor)/lib/libOpenCL\.so                u:object_r:vendor_public_lib_file:s0
+
+# The OpenCL ICD loads its private compute backend in the same app process.
+/(vendor|system/vendor)/lib/libCB\.so                    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib/libllvm-qcom\.so             u:object_r:same_process_hal_file:s0
+
 # The legacy-wrapper HIDL services take the HAL domains of their interfaces;
 # without an exec label init has no domain to start them in, so the IGnss and
 # IWifi instances the manifest declares never register.
