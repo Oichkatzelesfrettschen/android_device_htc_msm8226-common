@@ -35,10 +35,10 @@ bool DescribeAudio(const StreamInfo &stream, TrackFormat *format) {
             break;
         case 0x0162:  // WMA 9 Professional
         case 0x0166:  // WMA 10 Professional
-        case 0x0167:
             format->mime = kMimeWmaPro;
             break;
         case 0x0163:  // WMA 9 Lossless
+        case 0x0167:  // WMA 10 Pro Lossless
             format->mime = kMimeWmaLossless;
             break;
         case 0x0055:  // MPEG-1 Layer III
