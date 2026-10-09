@@ -1,1 +1,7 @@
 r_dir_file(hal_power_default, sysfs_devices_system_cpu)
+
+# fb_idle_open() in power-common.c opens /sys/class/graphics/fb0/idle_state.
+# The Linux 3.4 mdss_fb driver exports idle_time and idle_notify and no
+# idle_state, so the open ends in ENOENT past the directory search and the
+# HAL runs without the display-idle hint either way.
+dontaudit hal_power_default htc_sysfs_graphics:dir search;
