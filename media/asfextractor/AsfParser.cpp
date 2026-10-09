@@ -328,7 +328,8 @@ bool AsfFile::parseHeaderObjects(ByteSource *source, int64_t offset, int64_t end
             mPacketSize = minPacket;
             int64_t durationUs = (int64_t)(playDuration / 10) - (int64_t)mPrerollMs * 1000;
             mDurationUs = durationUs > 0 ? durationUs : 0;
-        } else if (!extension && isGuid(head, kStreamPropertiesObject)) {
+        } else if (isGuid(head, kStreamPropertiesObject)) {
+            // The Header Extension may carry Stream Properties Objects too.
             if (!parseStreamProperties(body.data(), bodySize)) {
                 return false;
             }
