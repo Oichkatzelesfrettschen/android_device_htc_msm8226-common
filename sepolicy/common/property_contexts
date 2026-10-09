@@ -53,6 +53,15 @@ qcom.gen_frameproc        u:object_r:a11_camera_prop:s0 exact string
 qcom.hdr                  u:object_r:a11_camera_prop:s0 exact string
 qcom.wavelet              u:object_r:a11_camera_prop:s0 exact string
 ro.pagesize               u:object_r:a11_camera_prop:s0 exact string
+# HTC names camera.vendor.msm8226.so reads with no platform owner: the 4K
+# switch under its sys. alias, the Sense version, the main camera and RAM
+# identity, and the burst and denoise tuning switches.
+sys.camera.4k2k.enable    u:object_r:a11_camera_prop:s0 exact string
+ro.build.sense.version    u:object_r:a11_camera_prop:s0 exact string
+ro.product.main_camera    u:object_r:a11_camera_prop:s0 exact string
+ro.product.ram            u:object_r:a11_camera_prop:s0 exact string
+persist.capture.burst.exposures u:object_r:a11_camera_prop:s0 exact string
+persist.denoise.process.plates u:object_r:a11_camera_prop:s0 exact string
 
 # Venus decoder configuration read by the OMX HAL
 media.codec               u:object_r:a11_media_config_prop:s0 exact string

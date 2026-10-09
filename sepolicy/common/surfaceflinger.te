@@ -1,6 +1,7 @@
 allow surfaceflinger htc_sysfs_gpuclk:file r_file_perms;
 
-# The camera HAL reads the KGSL clock while sizing buffers; apps reach the
-# node through the Adreno library, which tolerates the failed read.
+# The camera HAL reads the KGSL clock while sizing buffers; apps and
+# system_server reach the node through libGLESv2_adreno.so when they render,
+# and the driver tolerates the failed read.
 allow hal_camera_default htc_sysfs_gpuclk:file r_file_perms;
-dontaudit appdomain htc_sysfs_gpuclk:file { getattr open read };
+dontaudit { appdomain system_server } htc_sysfs_gpuclk:file { getattr open read };
