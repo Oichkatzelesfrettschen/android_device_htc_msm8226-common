@@ -218,6 +218,13 @@ PRODUCT_COPY_FILES += \
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH)
 
+# Storage: vold formats, checks and mounts exFAT volumes only when both tools
+# exist (exfat::IsSupported), and formats public volumes above 32896 MiB as
+# exFAT when asked for auto.
+PRODUCT_PACKAGES += \
+    fsck.exfat \
+    mkfs.exfat
+
 # TimeKeep
 PRODUCT_PACKAGES += \
     timekeep \
