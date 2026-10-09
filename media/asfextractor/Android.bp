@@ -1,0 +1,31 @@
+// MediaExtractorFactory loads every *extractor.so under
+// /system_ext/lib/extractors into media.extractor's default namespace and
+// registers the GETEXTRACTORDEF it exports.
+cc_library_shared {
+    name: "libasfextractor",
+    system_ext_specific: true,
+    relative_install_path: "extractors",
+    srcs: [
+        "AsfExtractor.cpp",
+        "AsfParser.cpp",
+        "AsfTracks.cpp",
+    ],
+    shared_libs: [
+        "liblog",
+        "libmediandk",
+        "libutils",
+    ],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fvisibility=hidden",
+    ],
+    sanitize: {
+        cfi: true,
+        misc_undefined: [
+            "signed-integer-overflow",
+            "unsigned-integer-overflow",
+        ],
+    },
+}
