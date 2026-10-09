@@ -60,6 +60,11 @@ TARGET_USES_MEDIA_EXTENSIONS := true
 # clients through CameraClient when this is set.
 $(call soong_config_set,camera,legacy_hal1,true)
 
+# Media
+# frameworks/av lists the Qualcomm WMA, AMR-WB+ and VC-1 OMX decoders in
+# GetComponentRole and configures them in ACodec when this is set.
+$(call soong_config_set,stagefright,omx_legacy_qcom_codecs,true)
+
 # Dexpreopt
 ifeq ($(HOST_OS),linux)
   ifneq ($(TARGET_BUILD_VARIANT),eng)

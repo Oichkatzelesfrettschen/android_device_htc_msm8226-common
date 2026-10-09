@@ -157,6 +157,8 @@
 /(vendor|system/vendor)/lib/libmmjpeg_interface\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/libmmqjpeg_codec\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/libnetmgr\.so    u:object_r:vendor_shim_target_file:s0
+/(vendor|system/vendor)/lib/libOmxAmrwbplusDec\.so    u:object_r:vendor_shim_target_file:s0
+/(vendor|system/vendor)/lib/libOmxWmaDec\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/liboemcamera\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/libposteffect\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/libqcci_legacy\.so    u:object_r:vendor_shim_target_file:s0
@@ -188,6 +190,7 @@
 
 # qdsp6v2 capture-codec misc devices.
 /dev/msm_(aac|amrnb|evrc|qcelp)_in    u:object_r:a11_dsp_encoder_device:s0
+/dev/msm_(wma|wmapro|amrwbplus)      u:object_r:a11_dsp_decoder_device:s0
 
 # qdsp6v2 calibration nodes. libacdbloader in the audio HAL pushes the ACDB
 # device calibration through msm_acdb ioctls, and libacdbrtac registers its

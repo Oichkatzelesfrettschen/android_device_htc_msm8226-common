@@ -30,6 +30,9 @@ type vendor_shim_target_file, file_type, vendor_file_type;
 # aDSP capture-codec nodes (msm_aac_in, msm_amrnb_in, msm_evrc_in, msm_qcelp_in)
 # that the OMX audio encoder components open.
 type a11_dsp_encoder_device, dev_type;
+# aDSP AIO decoder nodes (msm_wma, msm_wmapro, msm_amrwbplus) that
+# libOmxWmaDec and libOmxAmrwbplusDec open in component_init.
+type a11_dsp_decoder_device, dev_type;
 
 # The eMMC request queue's discard_max_bytes, read-only in Linux 3.4.
 type a11_sysfs_mmc_discard_max, fs_type, sysfs_type;
