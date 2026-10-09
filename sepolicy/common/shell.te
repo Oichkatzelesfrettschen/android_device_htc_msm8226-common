@@ -1,0 +1,3 @@
+# adb shell drives the USB HID gadget through /dev/hidg0 and /dev/hidg1 after
+# sys.usb.config=hid,adb selects the hid function.
+allow shell a11_hidg_device:chr_file rw_file_perms;
