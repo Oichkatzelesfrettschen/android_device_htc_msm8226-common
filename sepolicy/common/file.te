@@ -33,3 +33,6 @@ type a11_dsp_encoder_device, dev_type;
 # aDSP AIO decoder nodes (msm_wma, msm_wmapro, msm_amrwbplus) that
 # libOmxWmaDec and libOmxAmrwbplusDec open in component_init.
 type a11_dsp_decoder_device, dev_type;
+
+# The eMMC request queue's discard_max_bytes, read-only in Linux 3.4.
+type a11_sysfs_mmc_discard_max, fs_type, sysfs_type;

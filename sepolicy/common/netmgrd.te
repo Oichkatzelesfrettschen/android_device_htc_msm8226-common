@@ -24,5 +24,12 @@ allow netmgrd self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_read
 dontaudit netmgrd self:capability { sys_module sys_resource };
 dontaudit netmgrd shell_exec:file execute;
 
+# Its helper shell writes accept_ra for each rmnet link and looks up tc and
+# iptables on PATH. netd's InterfaceController::initializeAll() already sets
+# accept_ra to 2 on default and every existing interface, and vendor domains
+# may not execute system binaries, so both stay denied.
+dontaudit netmgrd proc_net:file write;
+dontaudit netmgrd system_file:file getattr;
+
 # netmgrd reads its QoS, iWLAN and log configuration and the baseband type.
 get_prop(netmgrd, a11_radio_config_prop)
