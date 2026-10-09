@@ -181,3 +181,6 @@
 /(vendor|system/vendor)/lib/libtuning_af\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/libtuning_awb_s5k5e2_twolane\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/libtuning_awb_s5k6a1gx\.so    u:object_r:vendor_shim_target_file:s0
+
+# qdsp6v2 capture-codec misc devices.
+/dev/msm_(aac|amrnb|evrc|qcelp)_in    u:object_r:a11_dsp_encoder_device:s0
