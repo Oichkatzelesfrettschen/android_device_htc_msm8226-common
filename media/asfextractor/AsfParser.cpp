@@ -47,6 +47,8 @@ constexpr int64_t kObjectHeaderOffset = (int64_t)kObjectHeaderSize;
 constexpr uint64_t kMaxHeaderSize = 1 << 24;  // header objects are read whole
 constexpr uint32_t kMaxPacketSize = 1 << 20;
 constexpr uint32_t kMaxObjectSize = 16 << 20;
+// Packet numbers stay below 2^32 so packet * packetSize fits an int64_t.
+constexpr uint64_t kMaxPacketCount = 1ull << 32;
 // A preroll beyond a day marks a corrupt File Properties Object.
 constexpr uint64_t kMaxPrerollMs = 24ull * 3600 * 1000;
 
@@ -235,7 +237,9 @@ bool AsfFile::parseExtendedStreamProperties(const uint8_t *data, size_t size) {
     c.u32();  // alternate data bitrate
     c.u32();  // alternate buffer size
     c.u32();  // alternate initial buffer fullness
-    uint32_t maxObjectSize = c.u32();
+    // Objects above kMaxObjectSize are dropped during reassembly, so a larger
+    // declared bound never sizes a buffer.
+    uint32_t maxObjectSize = std::min(c.u32(), kMaxObjectSize);
     c.u32();  // flags
     int number = static_cast<int>(c.u16() & 0x7f);
     c.u16();  // stream language ID index
@@ -419,6 +423,11 @@ bool AsfFile::parse(ByteSource *source, int64_t fileSize) {
         if (mPacketCount == 0 || mPacketCount > available) {
             mPacketCount = available;
         }
+    }
+    if (mPacketCount > kMaxPacketCount) {
+        mPacketCount = kMaxPacketCount;
+    }
+    if (fileSize > 0) {
         if (dataObjectSize >= sizeof(data)
                 && dataObjectSize <= (uint64_t)(fileSize - dataObject)) {
             parseSimpleIndex(source, dataObject + (int64_t)dataObjectSize, fileSize);
