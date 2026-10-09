@@ -9,3 +9,7 @@ allow init sysfs_android_usb:lnk_file read;
 # swapon_all in init.qcom.rc writes the swap header to the zram device.
 allow init ram_device:blk_file rw_file_perms;
 
+
+# init.a11chl.rc enables sweep2wake and doubletap2wake from /sys/android_touch
+# once boot completes.
+allow init htc_sysfs_touch_wake:file w_file_perms;
