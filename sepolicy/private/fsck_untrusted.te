@@ -1,0 +1,3 @@
+# fsck.exfat reads the removable device's physical sector size (BLKPBSZGET)
+# before filesystem I/O; vold runs it on every exFAT public volume it mounts.
+allowxperm fsck_untrusted vold_device:blk_file ioctl BLKPBSZGET;
