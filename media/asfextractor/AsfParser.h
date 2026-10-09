@@ -49,11 +49,16 @@ struct StreamInfo {
     uint32_t bitrate = 0;
     uint32_t maxObjectSize = 0;
     uint64_t avgTimePerFrame100ns = 0;
-};
-
-struct IndexEntry {
-    uint32_t packet;
-    uint16_t count;
+    // Stream Properties Time Offset, added to every presentation time.
+    uint64_t timeOffset100ns = 0;
+    // Simple Index Object of a video stream: the n-th index object in the
+    // file belongs to the n-th video stream.
+    struct IndexEntry {
+        uint32_t packet;
+        uint16_t count;
+    };
+    std::vector<IndexEntry> index;
+    uint64_t indexInterval100ns = 0;
 };
 
 class AsfFile {
@@ -69,9 +74,6 @@ public:
     uint64_t packetCount() const { return mPacketCount; }
     uint64_t prerollMs() const { return mPrerollMs; }
     int64_t durationUs() const { return mDurationUs; }
-    // Simple Index Object entries, one per mIndexInterval100ns.
-    const std::vector<IndexEntry> &index() const { return mIndex; }
-    uint64_t indexInterval100ns() const { return mIndexInterval100ns; }
 
 private:
     bool parseHeaderObjects(ByteSource *source, int64_t offset, int64_t end, bool extension);
@@ -86,8 +88,6 @@ private:
     uint64_t mPacketCount = 0;
     uint64_t mPrerollMs = 0;
     int64_t mDurationUs = 0;
-    std::vector<IndexEntry> mIndex;
-    uint64_t mIndexInterval100ns = 0;
     // Extended Stream Properties seen before their Stream Properties Object.
     std::vector<StreamInfo> mPendingExtended;
 };
@@ -108,7 +108,9 @@ public:
     // Positions the reader at the packet that holds the key frame at or
     // before timeUs (Simple Index Object) or at the last packet sent at or
     // before timeUs plus the preroll (send-time bisection).
-    void seek(int64_t timeUs);
+    // With nextSync, objects presented before timeUs are dropped, so the
+    // first object returned is the first sync object at or after timeUs.
+    void seek(int64_t timeUs, bool nextSync);
 
 private:
     bool readPacket(uint64_t packet);
@@ -132,6 +134,8 @@ private:
     bool mObjectKey = false;
     std::vector<uint8_t> mObject;
     bool mNeedKey = false;
+    bool mDropBeforeTarget = false;
+    int64_t mTargetUs = 0;
 };
 
 }  // namespace asf

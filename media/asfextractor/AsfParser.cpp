@@ -137,7 +137,7 @@ bool AsfFile::parseStreamProperties(const uint8_t *data, size_t size) {
     c.skip(16);
     const uint8_t *errorCorrectionType = c.here();
     c.skip(16);
-    c.u64();  // time offset
+    uint64_t timeOffset = c.u64();
     uint32_t typeSpecificLength = c.u32();
     uint32_t errorCorrectionLength = c.u32();
     uint32_t flags = c.u16();
@@ -153,6 +153,8 @@ bool AsfFile::parseStreamProperties(const uint8_t *data, size_t size) {
     const uint8_t *errorCorrection = c.here();
 
     StreamInfo info;
+    // A Time Offset beyond the preroll bound marks a corrupt object.
+    info.timeOffset100ns = std::min<uint64_t>(timeOffset, kMaxPrerollMs * 10000);
     info.number = static_cast<int>(flags & 0x7f);
     info.encrypted = (flags & 0x8000) != 0;
     if (info.number == 0 || findStream(info.number) != nullptr) {
@@ -378,13 +380,22 @@ void AsfFile::parseSimpleIndex(ByteSource *source, int64_t offset, int64_t fileS
             if (!readFully(source, offset + kObjectHeaderOffset + 32, raw.data(), raw.size())) {
                 return;
             }
-            mIndex.resize(count);
-            for (uint32_t i = 0; i < count; ++i) {
-                mIndex[i].packet = le32(&raw[(size_t)i * 6]);
-                mIndex[i].count = le16(&raw[(size_t)i * 6 + 4]);
+            StreamInfo *video = nullptr;
+            for (StreamInfo &s : mStreams) {
+                if (s.kind == StreamKind::kVideo && s.index.empty()) {
+                    video = &s;
+                    break;
+                }
             }
-            mIndexInterval100ns = interval;
-            return;
+            if (video == nullptr) {
+                return;
+            }
+            video->index.resize(count);
+            for (uint32_t i = 0; i < count; ++i) {
+                video->index[i].packet = le32(&raw[(size_t)i * 6]);
+                video->index[i].count = le16(&raw[(size_t)i * 6 + 4]);
+            }
+            video->indexInterval100ns = interval;
         }
         offset += (int64_t)objectSize;
     }
@@ -465,19 +476,27 @@ void StreamReader::descramble(std::vector<uint8_t> *data) const {
 
 void StreamReader::emit(std::vector<uint8_t> &&data, uint32_t presentationMs, bool key) {
     bool video = mStream.kind == StreamKind::kVideo;
+    int64_t timeUs = ((int64_t)presentationMs - (int64_t)mFile.prerollMs()) * 1000
+            + (int64_t)(mStream.timeOffset100ns / 10);
+    timeUs = timeUs > 0 ? timeUs : 0;
+    // After a next-sync seek, objects before the target go first; the first
+    // object kept must then be a key frame for video.
+    if (mDropBeforeTarget && timeUs < mTargetUs) {
+        return;
+    }
     if (video && mNeedKey) {
         if (!key) {
             return;
         }
         mNeedKey = false;
     }
+    mDropBeforeTarget = false;
     MediaObject object;
     object.data = std::move(data);
     if (!video) {
         descramble(&object.data);
     }
-    int64_t timeUs = ((int64_t)presentationMs - (int64_t)mFile.prerollMs()) * 1000;
-    object.timeUs = timeUs > 0 ? timeUs : 0;
+    object.timeUs = timeUs;
     object.keyFrame = video ? key : true;
     mReady.push_back(std::move(object));
 }
@@ -530,7 +549,7 @@ bool StreamReader::readPacket(uint64_t packet) {
     uint32_t packetLength = c.sized(flags >> 5);
     c.sized(flags >> 1);  // sequence
     uint32_t padding = c.sized(flags >> 3);
-    c.u32();  // send time
+    uint32_t sendTime = c.u32();
     c.u16();  // duration
     if (!c.ok()) {
         return true;
@@ -598,6 +617,16 @@ bool StreamReader::readPacket(uint64_t packet) {
                 pos += size;
                 time += delta;
             }
+        } else if (replicatedLength == 0) {
+            // Without replicated data the payload is a whole object presented
+            // at the packet's send time; a fragment at a nonzero offset has no
+            // object size to reassemble against.
+            if (offsetOrTime == 0) {
+                emit(std::vector<uint8_t>(payload, payload + payloadLength),
+                        (uint32_t)std::min<uint64_t>(
+                                (uint64_t)sendTime + mFile.prerollMs(), UINT32_MAX),
+                        key);
+            }
         } else if (replicatedLength >= 8) {
             addFragment(objectNumber, offsetOrTime, le32(replicated), le32(replicated + 4), key,
                     payload, payloadLength);
@@ -642,7 +671,7 @@ bool StreamReader::packetSendTime(uint64_t packet, uint32_t *sendTimeMs) {
     return c.ok();
 }
 
-void StreamReader::seek(int64_t timeUs) {
+void StreamReader::seek(int64_t timeUs, bool nextSync) {
     mReady.clear();
     mReadyHead = 0;
     mAssembling = false;
@@ -650,13 +679,18 @@ void StreamReader::seek(int64_t timeUs) {
     mNeedKey = mStream.kind == StreamKind::kVideo;
     // Clamping to about 35 years keeps the 100 ns arithmetic in range.
     timeUs = std::max<int64_t>(0, std::min<int64_t>(timeUs, INT64_C(1) << 50));
+    mDropBeforeTarget = nextSync;
+    mTargetUs = timeUs;
+    // Presentation times carry the stream Time Offset; packet timing does not.
+    int64_t mediaUs = std::max<int64_t>(0, timeUs - (int64_t)(mStream.timeOffset100ns / 10));
 
     // Index entries sit at multiples of the interval on the presentation
-    // clock, which includes the preroll.
-    const std::vector<IndexEntry> &index = mFile.index();
+    // clock, which includes the preroll. Each entry names the packet that
+    // starts the last key frame at or before its time.
+    const std::vector<StreamInfo::IndexEntry> &index = mStream.index;
     if (mStream.kind == StreamKind::kVideo && !index.empty()) {
-        uint64_t presentation100ns = (uint64_t)timeUs * 10 + mFile.prerollMs() * 10000;
-        uint64_t slot = presentation100ns / mFile.indexInterval100ns();
+        uint64_t presentation100ns = (uint64_t)mediaUs * 10 + mFile.prerollMs() * 10000;
+        uint64_t slot = presentation100ns / mStream.indexInterval100ns;
         if (slot >= index.size()) {
             slot = index.size() - 1;
         }
@@ -666,7 +700,7 @@ void StreamReader::seek(int64_t timeUs) {
 
     // A packet is sent one preroll ahead of its presentation, so send times
     // run on the media clock without the preroll.
-    uint64_t target = (uint64_t)(timeUs / 1000);
+    uint64_t target = (uint64_t)(mediaUs / 1000);
     // Send times grow with the packet number; find the last packet sent at
     // or before the target.
     uint64_t lo = 0;

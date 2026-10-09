@@ -85,8 +85,17 @@ public:
         *out = nullptr;
         int64_t seekTimeUs;
         ReadOptions::SeekMode mode;
+        int64_t targetTimeUs = -1;
         if (options != nullptr && options->getSeekTo(&seekTimeUs, &mode)) {
-            mReader.seek(seekTimeUs);
+            // SEEK_NEXT_SYNC starts at the first sync object at or after the
+            // time. SEEK_CLOSEST starts at the previous sync object and tags it
+            // with the target, so the decoder drops frames before it.
+            // SEEK_PREVIOUS_SYNC and SEEK_CLOSEST_SYNC start at the previous
+            // sync object.
+            mReader.seek(seekTimeUs, mode == ReadOptions::SEEK_NEXT_SYNC);
+            if (mode == ReadOptions::SEEK_CLOSEST) {
+                targetTimeUs = seekTimeUs;
+            }
         }
 
         asf::MediaObject object;
@@ -111,6 +120,9 @@ public:
         AMediaFormat_clear(meta);
         AMediaFormat_setInt64(meta, AMEDIAFORMAT_KEY_TIME_US, object.timeUs);
         AMediaFormat_setInt32(meta, AMEDIAFORMAT_KEY_IS_SYNC_FRAME, object.keyFrame ? 1 : 0);
+        if (targetTimeUs >= 0) {
+            AMediaFormat_setInt64(meta, AMEDIAFORMAT_KEY_TARGET_TIME, targetTimeUs);
+        }
         *out = buffer;
         return AMEDIA_OK;
     }
