@@ -1,2 +1,6 @@
 # The Venus OMX components read their decoder configuration.
 get_prop(mediacodec, a11_media_config_prop)
+
+# The OMX audio encoders (libOmxAacEnc, libOmxAmrEnc, libOmxEvrcEnc,
+# libOmxQcelp13Enc) drive the aDSP encoder sessions through ioctl on these nodes.
+allow mediacodec a11_dsp_encoder_device:chr_file rw_file_perms;
