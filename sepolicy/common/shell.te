@@ -1,3 +1,14 @@
 # adb shell drives the USB HID gadget through /dev/hidg0 and /dev/hidg1 after
 # sys.usb.config=hid,adb selects the hid function.
 allow shell a11_hidg_device:chr_file rw_file_perms;
+
+# Audio diagnostics from adb shell on userdebug and eng builds. The platform
+# grants shell r_file_perms on proc_asound files (private/shell.te) but no
+# directory access, so /proc/asound/cards, pcm and card0/pcm*/sub0/hw_params
+# fail at the directory search; sysfs_switch (the /sys/class/switch h2w
+# headset state) has no shell rule at all. Neither type appears in a shell
+# neverallow. user builds compile the macro away.
+userdebug_or_eng(`
+  r_dir_file(shell, proc_asound)
+  r_dir_file(shell, sysfs_switch)
+')
