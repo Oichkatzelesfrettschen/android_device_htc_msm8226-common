@@ -150,11 +150,12 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video_le.xml \
     device/htc/msm8226-common/configs/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml
 
-# Network - Do not spin up a separate process for the network stack, use an in-process APK.
+# Network
 PRODUCT_PACKAGES += liba11-legacy-radio
 
+# Tethering requires the separate NetworkStack APK's signature permission.
 PRODUCT_PACKAGES += \
-    InProcessNetworkStack
+    NetworkStack
 
 # Offline Charger
 PRODUCT_PACKAGES += \
