@@ -88,6 +88,8 @@ debug.composition.type=c2d
 # shows that bin as static. HWUI redraws the whole surface every frame.
 debug.hwui.use_buffer_age=false
 debug.hwui.use_partial_updates=false
+# The Adreno 305 tiled-rendering path preserves GMEM bins for multi-rect damage.
+ro.hwui.adreno305_duplicate_damage_rect=true
 debug.disable.bwc=1
 
 # fastbootd
