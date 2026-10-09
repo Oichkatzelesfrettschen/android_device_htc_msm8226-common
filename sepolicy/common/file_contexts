@@ -74,6 +74,9 @@
 /proc/last_kmsg    u:object_r:htc_proc_last_kmsg:s0
 /dev/block/mmcblk0p42    u:object_r:cache_block_device:s0
 /dev/block/mmcblk0p44    u:object_r:userdata_block_device:s0
+# mmcblk0p24 is misc, the bootloader message partition; misctrl and
+# kcmdlinectrl read it at boot and uncrypt writes the recovery command to it.
+/dev/block/mmcblk0p24    u:object_r:misc_block_device:s0
 /sys/devices/platform/htc_battery/power_supply(/.*)?    u:object_r:sysfs_batteryinfo:s0
 /sys/devices/qpnp-bms-[0-9a-f]+/power_supply(/.*)?    u:object_r:sysfs_batteryinfo:s0
 /sys/android_camera_awb_cal(/.*)?    u:object_r:htc_sysfs_camera:s0
