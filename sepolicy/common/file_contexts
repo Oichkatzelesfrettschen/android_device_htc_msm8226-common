@@ -11,6 +11,8 @@
 /dev/jpeg[0-9]+     u:object_r:camera_device:s0
 
 /dev/kgsl-3d0    u:object_r:gpu_device:s0
+/dev/cm3602    u:object_r:sensors_device:s0
+/dev/lightsensor    u:object_r:sensors_device:s0
 /dev/socket/qmux_(radio|gps|audio|bluetooth)(/.*)?    u:object_r:htc_qmux_radio_socket:s0
 
 # Radio daemons. mmcblk0p25, p26, p19, p34, p35, p18 and p33 are modem_st1,
