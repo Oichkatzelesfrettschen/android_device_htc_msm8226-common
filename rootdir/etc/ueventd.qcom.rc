@@ -198,6 +198,10 @@ firmware_directories /firmware/radio/ /firmware/adsp/image/ /firmware/wcnss/
 /dev/dvb/adapter0/video*  0664   media       media
 
 # sensors
+# The CM36686 driver registers its proximity and light misc devices under
+# the CM3602 and lightsensor names; the sensors HAL opens them as system.
+/dev/cm3602               0640   system     system
+/dev/lightsensor          0640   system     system
 /sys/devices/i2c-12/12-*  pollrate_ms 0664 system system
 /sys/devices/f9925000.i2c/i2c-0/0-* enable          0660     input     system
 /sys/devices/f9925000.i2c/i2c-0/0-* poll_delay      0660     input     system
