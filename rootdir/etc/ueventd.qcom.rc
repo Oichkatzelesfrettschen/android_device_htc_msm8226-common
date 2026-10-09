@@ -124,6 +124,8 @@ firmware_directories /firmware/radio/ /firmware/adsp/image/ /firmware/wcnss/
 /dev/msm_vidc_enc         0660   system     audio
 /dev/msm_rotator          0660   system     system
 /dev/hw_random            0660   system     system
+/dev/frandom              0666   root       root
+/dev/erandom              0666   root       root
 /dev/adsprpc-smd          0664   system     system
 /dev/htc_msgservice       0660   system     system
 /dev/simlock              0660   radio      radio
