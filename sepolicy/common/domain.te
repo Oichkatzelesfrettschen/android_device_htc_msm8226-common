@@ -2,13 +2,6 @@
 # SELinux system permissions cannot distinguish individual module names.
 dontaudit domain kernel:system module_request;
 
-# build/make/core/config.mk sets PRODUCT_COMPATIBLE_PROPERTY false for a
-# PRODUCT_SHIPPING_API_LEVEL of 27 or lower, so the compatible_property_only
-# grant of exported_camera_prop in system/sepolicy/private/domain.te is absent.
-# SystemServer, CameraManager, and CameraUtils read config.disable_cameraservice
-# (exported_camera_prop); the same domain set receives the read here.
-get_prop({ coredomain appdomain shell }, exported_camera_prop)
-
 # bionic's parse_LD_SHIM_LIBS calls access(R_OK) and realpath() on every
 # TARGET_LD_SHIM_LIBS target at each process start; Linux 3.4 reports the
 # access() probe as read rather than audit_access. A core domain keeps the

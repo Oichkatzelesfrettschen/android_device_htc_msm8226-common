@@ -1,15 +1,20 @@
 allow init firmware_file:dir mounton;
-allow init htc_sysfs_sensors:file setattr;
-allow init htc_sysfs_adsp:file w_file_perms;
-allow init { htc_sysfs_cpu_boost htc_sysfs_ksm }:file w_file_perms;
 allow init htc_proc_last_kmsg:file setattr;
-# init.qcom.rc follows the android0 USB gadget link while it configures USB.
+
+# init.qcom.rc, init.a11chl.rc and the HAL rc files live under /vendor/etc/init,
+# so init runs their write, chown and chmod commands in the vendor_init
+# subcontext, which holds those grants on sysfs_type. The rules here cover
+# commands init runs itself.
+
+# /system/etc/init/hw/init.usb.rc follows the android0 USB gadget link while
+# it configures USB.
 allow init sysfs_android_usb:lnk_file read;
 
 # swapon_all in init.qcom.rc writes the swap header to the zram device.
 allow init ram_device:blk_file rw_file_perms;
 
-
-# init.a11chl.rc enables sweep2wake and doubletap2wake from /sys/android_touch
-# once boot completes.
-allow init htc_sysfs_touch_wake:file w_file_perms;
+# init.rc writes 128 MiB to the root disk's queue/discard_max_bytes on
+# post-fs-data. block/blk-sysfs.c in Linux 3.4 declares the attribute S_IRUGO
+# with no store method, so sysfs refuses the open for write whatever the
+# policy allows.
+dontaudit init a11_sysfs_mmc_discard_max:file write;

@@ -29,8 +29,9 @@ set_prop(a11_camera_daemon, a11_camera_prop)
 # provider.
 allow a11_camera_daemon hal_camera_default:fd use;
 
-# The HAL1 blob writes persist.camera.forceuseaudio, a property no policy
-# declares; the write fails without effect on capture.
+# The HAL1 blob writes persist.camera.forceuseaudio. property_contexts puts
+# the persist.camera. family in a11_camera_prop, which only the daemon sets,
+# so the write fails without effect on capture.
 dontaudit hal_camera_default property_socket:sock_file write;
 dontaudit hal_camera_default init:unix_stream_socket connectto;
 
