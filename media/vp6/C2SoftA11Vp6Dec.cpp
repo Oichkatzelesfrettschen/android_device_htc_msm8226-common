@@ -72,8 +72,8 @@ public:
                 DefineParam(mMaxSize, C2_PARAMKEY_MAX_PICTURE_SIZE)
                 .withDefault(new C2StreamMaxPictureSizeTuning::output(0u, 320, 240))
                 .withFields({
-                    C2F(mMaxSize, width).inRange(2, kMaxDimension, 2),
-                    C2F(mMaxSize, height).inRange(2, kMaxDimension, 2),
+                    C2F(mMaxSize, width).inRange(2, kMaxDimension),
+                    C2F(mMaxSize, height).inRange(2, kMaxDimension),
                 })
                 .withSetter(MaxPictureSizeSetter, mSize)
                 .build());
@@ -205,7 +205,12 @@ c2_status_t C2SoftA11Vp6Dec::onStop() {
 
 void C2SoftA11Vp6Dec::onReset() {
     (void)onStop();
-    (void)onFlush_sm();
+    // A reset component may decode another stream: the decoder, its mode,
+    // references and crop CSD go, and the next CSD or key frame reopens it.
+    closeDecoder();
+    mCsdSize = 0;
+    mWidth = 320;
+    mHeight = 240;
 }
 
 void C2SoftA11Vp6Dec::onRelease() {

@@ -446,6 +446,11 @@ private:
 
     void loadOpenDml(Stream *s) {
         for (const SuperEntry &e : s->superIndex) {
+            // The track packet cap bounds the work: once it is reached no
+            // further standard index adds a sample.
+            if (s->info.packets.size() >= kMaxPackets) {
+                return;
+            }
             uint8_t head[32];
             if (mFileSize < 32 || e.offset > mFileSize - 32 || !ReadFully(mSource, e.offset, head, sizeof(head))) {
                 continue;
@@ -463,11 +468,19 @@ private:
             if (!ReadFully(mSource, e.offset + 32, entries.data(), entries.size())) {
                 continue;
             }
-            for (uint32_t i = 0; i < used; ++i) {
+            for (uint32_t i = 0; i < used && s->info.packets.size() < kMaxPackets; ++i) {
                 const uint8_t *ent = entries.data() + static_cast<size_t>(i) * 8;
                 const uint32_t sz = Le32(ent + 4);
+                const uint32_t len = sz & 0x7FFFFFFFu;
                 // Offsets address the chunk data; the size's top bit marks a delta frame.
-                if (!addPacket(s, base + Le32(ent), sz & 0x7FFFFFFFu, (sz & 0x80000000u) == 0)) {
+                // A position that wraps or runs past the file keeps its timeline slot
+                // as a dropped frame.
+                uint64_t pos = 0;
+                uint64_t endPos = 0;
+                const bool inFile = !__builtin_add_overflow(base, static_cast<uint64_t>(Le32(ent)), &pos)
+                        && !__builtin_add_overflow(pos, static_cast<uint64_t>(len), &endPos)
+                        && endPos <= mFileSize;
+                if (!addPacket(s, pos, inFile ? len : 0, (sz & 0x80000000u) == 0)) {
                     return;
                 }
             }
@@ -563,6 +576,16 @@ private:
             if (s.info.video && UnitsToUs(1, s.scale, s.rate, &frameUs) &&
                 __builtin_add_overflow(end, frameUs, &end)) {
                 end = s.info.packets.back().timeUs;
+            }
+            if (!s.info.video) {
+                // An audio track ends where its last chunk's units end: the byte
+                // count over the sample size for fixed-size samples, else the
+                // chunk count.
+                int64_t audioEnd = 0;
+                const uint64_t units = s.start + (s.sampleSize > 0 ? s.bytes / s.sampleSize : s.chunks);
+                if (UnitsToUs(units, s.scale, s.rate, &audioEnd)) {
+                    end = std::max(end, audioEnd);
+                }
             }
             mDurationUs = std::max(mDurationUs, end);
         }

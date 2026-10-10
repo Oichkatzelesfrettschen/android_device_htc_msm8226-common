@@ -105,7 +105,10 @@ TrackReader::Status TrackReader::nextMp3(Sample *out) {
         if (st != Status::kOk) {
             return st;
         }
-        if (mMp3AnchorUs < 0) {
+        // A packet that starts on a frame boundary (nothing carried) re-anchors
+        // frame timing at its container timestamp, so timestamp gaps survive;
+        // a carried partial frame keeps the running sample clock.
+        if (mMp3AnchorUs < 0 || mCarry.empty()) {
             mMp3AnchorUs = packet.timeUs;
             mMp3Samples = 0;
         }
