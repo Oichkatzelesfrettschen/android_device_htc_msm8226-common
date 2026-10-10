@@ -130,7 +130,11 @@ private:
                             &mVideo.width, &mVideo.height)) {
                         return;
                     }
+                    // csd-0: the crop byte, then 1 for the alpha variant.
                     mVideo.csd0.assign(1, h[1]);
+                    if (codec == kCodecVp6Alpha) {
+                        mVideo.csd0.push_back(1);
+                    }
                 }
                 mVideo.mime = kMimeVp6;
                 p.offset = body + 2;

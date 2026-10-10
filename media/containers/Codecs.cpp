@@ -371,8 +371,16 @@ bool ParseSparkSize(const uint8_t *data, size_t size, int32_t *width, int32_t *h
         return false;
     }
     switch (code) {
-        case 0: if (!br.get(8, &w) || !br.get(8, &h)) return false; break;
-        case 1: if (!br.get(16, &w) || !br.get(16, &h)) return false; break;
+        case 0:
+            if (!br.get(8, &w) || !br.get(8, &h)) {
+                return false;
+            }
+            break;
+        case 1:
+            if (!br.get(16, &w) || !br.get(16, &h)) {
+                return false;
+            }
+            break;
         case 2: w = 352; h = 288; break;
         case 3: w = 176; h = 144; break;
         case 4: w = 128; h = 96; break;
