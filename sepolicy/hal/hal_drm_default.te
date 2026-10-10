@@ -1,0 +1,7 @@
+# The Widevine L3 plugin libwvdrmengine.so keeps its device certificate, usage
+# table and L3 state under /data/vendor/w/IDM<uid>. Vendor domains reach only
+# /data/vendor, so the directory carries its own vendor data type.
+type mediadrm_vendor_data_file, file_type, data_file_type;
+
+allow hal_drm_default mediadrm_vendor_data_file:dir create_dir_perms;
+allow hal_drm_default mediadrm_vendor_data_file:file create_file_perms;

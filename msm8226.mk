@@ -90,10 +90,17 @@ PRODUCT_PACKAGES += \
     libxml2 \
     Aperture
 
-# DRM
+# DRM: android.hardware.drm@1.0-service loads each plugin in
+# /vendor/lib/mediadrm. vendor/htc-a11chl installs the Widevine L3 plugin,
+# whose NEEDED protobuf library is libprotobuf-cpp-lite-v29.so, and the plugin
+# keeps its state in /data/vendor/w (rootdir/etc/init.drm.rc).
 PRODUCT_PACKAGES += \
     android.hardware.drm@1.0-impl \
-    android.hardware.drm@1.0-service
+    android.hardware.drm@1.0-service \
+    libprotobuf-cpp-lite-v29
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/etc/init.drm.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.drm.rc
 
 # fastbootd
 PRODUCT_PACKAGES += \
