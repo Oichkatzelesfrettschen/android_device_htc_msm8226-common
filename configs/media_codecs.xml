@@ -185,6 +185,24 @@
             <Limit name="sample-rate" ranges="8000-48000" />
             <Limit name="bitrate" range="5200-48000" />
         </MediaCodec>
+        <!-- libOmxAacDec decodes AAC-LC, HE-AAC and HE-AAC v2 on the aDSP:
+             OMX.qcom.audio.decoder.aac through /dev/msm_aac (audio_aac.c,
+             mono and stereo) and OMX.qcom.audio.decoder.multiaac through
+             /dev/msm_multi_aac (audio_multi_aac.c, the 5.1 decoder). Both
+             register the audio_decoder.aac role. MediaCodecList sorts
+             ascending by rank and c2.android.aac.decoder ranks 8, so the
+             rows set 4 and 5 to sort ahead of it; the stereo component comes
+             first and the 5.1 component second. -->
+        <MediaCodec name="OMX.qcom.audio.decoder.aac" type="audio/mp4a-latm" rank="4" >
+            <Limit name="channel-count" max="2" />
+            <Limit name="sample-rate" ranges="8000,11025,12000,16000,22050,24000,32000,44100,48000" />
+            <Limit name="bitrate" range="8000-576000" />
+        </MediaCodec>
+        <MediaCodec name="OMX.qcom.audio.decoder.multiaac" type="audio/mp4a-latm" rank="5" >
+            <Limit name="channel-count" max="6" />
+            <Limit name="sample-rate" ranges="8000,11025,12000,16000,22050,24000,32000,44100,48000" />
+            <Limit name="bitrate" range="8000-960000" />
+        </MediaCodec>
         <!-- Video Hardware  -->
         <MediaCodec name="OMX.qcom.video.decoder.avc" type="video/avc" >
             <Quirk name="requires-allocate-on-input-ports" />
