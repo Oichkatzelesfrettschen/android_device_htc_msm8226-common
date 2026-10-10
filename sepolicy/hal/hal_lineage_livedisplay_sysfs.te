@@ -1,0 +1,4 @@
+# cabc_level_ctl is reached through /sys/class/leds/lcd-backlight, a symlink
+# in the sysfs_leds class directory to the LED device directory.
+allow hal_lineage_livedisplay_sysfs sysfs_leds:dir search;
+allow hal_lineage_livedisplay_sysfs sysfs_leds:lnk_file read;

@@ -1,0 +1,25 @@
+# DRM plugin storage (mkdir in rootdir/etc/init.drm.rc).
+/data/vendor/w(/.*)?    u:object_r:mediadrm_vendor_data_file:s0
+
+# LiveDisplay HAL (device/htc/a11/livedisplay). The service runs in the
+# sysfs LiveDisplay domain, which reads and writes sysfs_livedisplay_tuneable.
+# cabc_level_ctl (mdss_htc_util.c) sits in the lcd-backlight LED directory of
+# the primary mdss framebuffer; the entry spells out the framebuffer path, which
+# gives it a longer literal prefix than the LED glob in common/file_contexts.
+# The KCAL attributes (kcal_ctrl.c) sit on the kcal_ctrl platform device.
+/(vendor|system/vendor)/bin/hw/vendor\.lineage\.livedisplay@2\.0-service\.a11    u:object_r:hal_lineage_livedisplay_sysfs_exec:s0
+/sys/devices/fd900000\.qcom,mdss_mdp/qcom,mdss_fb_primary\.[0-9]+/leds/lcd-backlight/cabc_level_ctl    u:object_r:sysfs_livedisplay_tuneable:s0
+/sys/devices/platform/kcal_ctrl\.0/(kcal|kcal_ctrl|kcal_min)    u:object_r:sysfs_livedisplay_tuneable:s0
+
+# Thermal HAL (hardware/google/pixel, configured by device/htc/a11/thermal).
+# The class directory and its zones take the label from genfs_contexts and from
+# the restorecon that ueventd runs on each registered zone.
+/(vendor|system/vendor)/bin/hw/android\.hardware\.thermal-service\.pixel    u:object_r:hal_thermal_default_exec:s0
+/sys/devices/virtual/thermal(/.*)?    u:object_r:sysfs_thermal:s0
+
+# Vibrator HAL (device/htc/a11/vibrator). voltage_level is the amplitude node of
+# qpnp-vibrator.c; the common vibrator rules cover the sysfs_vibrator type. The
+# nodes take the label from genfs_contexts and from the restorecon that ueventd
+# runs on the registered timed_output device.
+/(vendor|system/vendor)/bin/hw/android\.hardware\.vibrator-service\.a11    u:object_r:hal_vibrator_default_exec:s0
+/sys/devices/virtual/timed_output/vibrator/(enable|voltage_level)    u:object_r:sysfs_vibrator:s0

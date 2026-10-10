@@ -1,0 +1,4 @@
+# libwvdrmengine.so creates /data/vendor/w/IDM<uid> under this directory. The HAL
+# runs as media with group mediadrm, so mode 0770 gives it create access.
+on post-fs-data
+    mkdir /data/vendor/w 0770 media mediadrm
