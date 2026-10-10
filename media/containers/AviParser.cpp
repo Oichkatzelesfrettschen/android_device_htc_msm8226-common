@@ -124,9 +124,23 @@ bool DescribeVideo(Stream *s) {
                 s->info.csd0 = s->extra;
             }
             break;
+        case FourCC('A', 'V', 'C', '1'): {
+            s->info.mime = kMimeAvc;
+            // An AVC1 stream may carry an AVCDecoderConfigurationRecord in the
+            // strf extension and length-prefixed NAL units in its chunks;
+            // without one it is Annex B like H264.
+            AvcConfig avc;
+            if (!s->extra.empty() && s->extra[0] == 1
+                    && ParseAvcConfig(s->extra.data(), s->extra.size(), &avc)) {
+                s->info.csd0 = avc.sps;
+                s->info.csd1 = avc.pps;
+                s->info.nalLengthSize = avc.nalLengthSize;
+                s->info.transform = Transform::kAvcAnnexB;
+            }
+            break;
+        }
         case FourCC('H', '2', '6', '4'):
         case FourCC('X', '2', '6', '4'):
-        case FourCC('A', 'V', 'C', '1'):
             s->info.mime = kMimeAvc;  // Annex B in AVI; parameter sets in band
             break;
         default:
@@ -433,7 +447,7 @@ private:
     void loadOpenDml(Stream *s) {
         for (const SuperEntry &e : s->superIndex) {
             uint8_t head[32];
-            if (e.offset + 32 > mFileSize || !ReadFully(mSource, e.offset, head, sizeof(head))) {
+            if (mFileSize < 32 || e.offset > mFileSize - 32 || !ReadFully(mSource, e.offset, head, sizeof(head))) {
                 continue;
             }
             // ix## chunk: 8-byte header, then AVISTDINDEX.
@@ -541,10 +555,14 @@ private:
                 s.info.packets.front().key = true;
             }
             s.info.maxInput = std::max<size_t>(std::max<size_t>(s.info.maxInput, s.suggested), 4096);
+            if (s.info.transform == Transform::kAvcAnnexB) {
+                s.info.maxInput = AnnexBMaxSize(s.info.maxInput, s.info.nalLengthSize);
+            }
             int64_t end = s.info.packets.back().timeUs;
             int64_t frameUs = 0;
-            if (s.info.video && UnitsToUs(1, s.scale, s.rate, &frameUs)) {
-                end += frameUs;
+            if (s.info.video && UnitsToUs(1, s.scale, s.rate, &frameUs) &&
+                __builtin_add_overflow(end, frameUs, &end)) {
+                end = s.info.packets.back().timeUs;
             }
             mDurationUs = std::max(mDurationUs, end);
         }

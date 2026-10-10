@@ -60,7 +60,11 @@ bool TrackReader::seek(int64_t value, SeekMode mode, int64_t *targetUs) {
             mNext = after;
             return true;
         case SeekMode::kClosestSync:
-            if (after != n && p[after].timeUs - value < value - p[before].timeUs) {
+            // Distances are taken in unsigned arithmetic: a request at the
+            // int64_t extremes has no representable signed difference.
+            if (after != n &&
+                static_cast<uint64_t>(p[after].timeUs) - static_cast<uint64_t>(value) <
+                        static_cast<uint64_t>(value) - static_cast<uint64_t>(p[before].timeUs)) {
                 mNext = after;
             } else {
                 mNext = before;

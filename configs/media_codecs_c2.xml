@@ -8,8 +8,11 @@
 <MediaCodecs>
     <Decoders>
         <MediaCodec name="c2.a11.vp6.decoder" type="video/x-vnd.on2.vp6" >
+            <!-- The FLV VP6 crop byte trims an odd pixel count from the
+                 macroblock-aligned size, so displayed dimensions are not
+                 even; the decoder allocates and converts any size. -->
             <Limit name="size" min="16x16" max="1280x720" />
-            <Limit name="alignment" value="2x2" />
+            <Limit name="alignment" value="1x1" />
             <Limit name="block-size" value="16x16" />
             <Limit name="block-count" range="1-3600" />
             <Limit name="blocks-per-second" range="1-108000" />

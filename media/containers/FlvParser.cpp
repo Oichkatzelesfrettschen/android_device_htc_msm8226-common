@@ -262,7 +262,7 @@ private:
             // The first packet starts a decodable sequence.
             mVideo.packets.front().key = true;
             if (mVideo.transform == Transform::kAvcAnnexB) {
-                mVideo.maxInput += mVideo.maxInput / 4;
+                mVideo.maxInput = AnnexBMaxSize(mVideo.maxInput, mVideo.nalLengthSize);
             }
             out->tracks.push_back(mVideo);
         }
