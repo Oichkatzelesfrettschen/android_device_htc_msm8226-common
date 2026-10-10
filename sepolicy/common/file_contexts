@@ -197,7 +197,7 @@
 
 # qdsp6v2 capture-codec misc devices.
 /dev/msm_(aac|amrnb|evrc|qcelp)_in    u:object_r:a11_dsp_encoder_device:s0
-/dev/msm_(wma|wmapro|amrwbplus)      u:object_r:a11_dsp_decoder_device:s0
+/dev/msm_(wma|wmapro|amrwbplus|aac|multi_aac)      u:object_r:a11_dsp_decoder_device:s0
 
 # qdsp6v2 calibration nodes. libacdbloader in the audio HAL pushes the ACDB
 # device calibration through msm_acdb ioctls, and libacdbrtac registers its
