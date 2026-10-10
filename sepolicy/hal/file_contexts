@@ -1,0 +1,2 @@
+# DRM plugin storage (mkdir in rootdir/etc/init.drm.rc).
+/data/vendor/w(/.*)?    u:object_r:mediadrm_vendor_data_file:s0
