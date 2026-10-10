@@ -234,12 +234,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.usb@1.3-service.basic
 
-# Vibrator: the passthrough HAL loads vibrator.default, which writes
-# /sys/class/timed_output/vibrator/enable.
-PRODUCT_PACKAGES += \
-    android.hardware.vibrator@1.0-impl \
-    android.hardware.vibrator@1.0-service \
-    vibrator.default
+# Vibrator: device/htc/a11 builds android.hardware.vibrator-service.a11, which
+# serves IVibrator with amplitude control over the timed_output node.
 
 # Wifi
 PRODUCT_PACKAGES += \

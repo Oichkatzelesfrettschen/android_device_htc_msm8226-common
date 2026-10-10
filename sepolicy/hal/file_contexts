@@ -16,3 +16,10 @@
 # the restorecon that ueventd runs on each registered zone.
 /(vendor|system/vendor)/bin/hw/android\.hardware\.thermal-service\.pixel    u:object_r:hal_thermal_default_exec:s0
 /sys/devices/virtual/thermal(/.*)?    u:object_r:sysfs_thermal:s0
+
+# Vibrator HAL (device/htc/a11/vibrator). voltage_level is the amplitude node of
+# qpnp-vibrator.c; the common vibrator rules cover the sysfs_vibrator type. The
+# nodes take the label from genfs_contexts and from the restorecon that ueventd
+# runs on the registered timed_output device.
+/(vendor|system/vendor)/bin/hw/android\.hardware\.vibrator-service\.a11    u:object_r:hal_vibrator_default_exec:s0
+/sys/devices/virtual/timed_output/vibrator/(enable|voltage_level)    u:object_r:sysfs_vibrator:s0
