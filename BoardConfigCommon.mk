@@ -41,6 +41,9 @@ TARGET_CPU_VARIANT_RUNTIME := krait
 AUDIO_FEATURE_ENABLED_COMPRESS_VOIP := true
 AUDIO_FEATURE_ENABLED_EXTN_FORMATS := true
 AUDIO_FEATURE_ENABLED_EXTN_POST_PROC := true
+# FLAC_OFFLOAD_ENABLED reads snd_dec_flac from the kernel's compress_params.h, so
+# kernel/htc/a11 must carry the compress-offload UAPI before this flag builds.
+AUDIO_FEATURE_ENABLED_FLAC_OFFLOAD := true
 AUDIO_FEATURE_ENABLED_FLUENCE := true
 AUDIO_FEATURE_ENABLED_HFP := true
 AUDIO_FEATURE_ENABLED_PROXY_DEVICE := true
