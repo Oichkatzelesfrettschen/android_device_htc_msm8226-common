@@ -8,6 +8,8 @@
 
 #include <string.h>
 
+#include <algorithm>
+
 namespace a11 {
 
 namespace {
@@ -118,6 +120,14 @@ bool ParseMp3Header(const uint8_t *p, size_t size, Mp3Header *out) {
     return out->frameBytes >= 4;
 }
 
+size_t AnnexBMaxSize(size_t size, int lengthSize) {
+    const size_t prefix = lengthSize >= 1 && lengthSize <= 4 ? static_cast<size_t>(lengthSize) : 4;
+    const size_t grown = size / (prefix + 1) * 5 + size % (prefix + 1) + 4;
+    // A four-byte prefix converts in place; the quarter margin covers a source
+    // whose largest sample exceeds the size the index reported.
+    return std::max(grown, size + size / 4);
+}
+
 bool ParseAacConfig(const uint8_t *data, size_t size, AacConfig *out) {
     BitReader br(data, size);
     uint32_t aot, sfi, freq = 0, cfg;
@@ -153,6 +163,24 @@ bool ParseAacConfig(const uint8_t *data, size_t size, AacConfig *out) {
         case 11: channels = 7; break;
         case 12: case 14: channels = 8; break;
         default: return false;
+    }
+    // SBR (5) and PS (29) carry the output rate in extensionSamplingFrequency
+    // after the channel configuration (ISO/IEC 14496-3 1.6.2.1); the first rate
+    // field describes the half-rate AAC core.
+    if (aot == 5 || aot == 29) {
+        uint32_t extSfi;
+        if (!br.get(4, &extSfi)) {
+            return false;
+        }
+        if (extSfi == 15) {
+            if (!br.get(24, &freq) || freq == 0) {
+                return false;
+            }
+        } else if (extSfi < 13) {
+            freq = static_cast<uint32_t>(kAacRates[extSfi]);
+        } else {
+            return false;
+        }
     }
     if (freq > static_cast<uint32_t>(INT32_MAX)) {
         return false;

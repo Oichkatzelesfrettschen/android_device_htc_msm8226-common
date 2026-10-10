@@ -155,6 +155,10 @@ void TestAac() {
     CHECK(!a11::ParseAacConfig(zero, 2, &c));  // channel configuration 0 (PCE)
     uint8_t reservedRate[2] = {0x17, 0x80 - 0x80 + 0x68};  // sfi 13
     CHECK(!a11::ParseAacConfig(reservedRate, 1, &c));
+    // HE-AAC: object type 5, core 22050 Hz stereo, extension rate 44100 Hz.
+    const uint8_t heAac[] = {0x2b, 0x92, 0x08};
+    CHECK(a11::ParseAacConfig(heAac, sizeof(heAac), &c) && c.objectType == 5);
+    CHECK(c.sampleRate == 44100 && c.channels == 2);
 }
 
 void TestMp3() {
@@ -182,6 +186,15 @@ void TestAvc() {
     CHECK(!a11::AvcToAnnexB(overrun, sizeof(overrun), 4, &out));
     const uint8_t twoByte[] = {0, 1, 0x41, 0, 2, 0x65, 0x88};
     CHECK(a11::AvcToAnnexB(twoByte, sizeof(twoByte), 2, &out) && out.size() == 4 + 1 + 4 + 2);
+    // One-byte prefixes over one-byte NAL units grow by 5/2; the bound covers it.
+    std::vector<uint8_t> tiny;
+    for (int i = 0; i < 50; ++i) {
+        tiny.push_back(1);
+        tiny.push_back(0x09);
+    }
+    CHECK(a11::AvcToAnnexB(tiny.data(), tiny.size(), 1, &out) && out.size() == 250);
+    CHECK(a11::AnnexBMaxSize(tiny.size(), 1) >= out.size());
+    CHECK(a11::AnnexBMaxSize(100, 4) == 125);
 }
 
 void TestAvi() {
