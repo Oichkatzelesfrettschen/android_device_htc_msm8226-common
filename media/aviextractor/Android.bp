@@ -8,6 +8,7 @@ cc_library_shared {
     srcs: [
         "AviExtractor.cpp",
     ],
+    static_libs: ["liba11containers"],
     shared_libs: [
         "liblog",
         "libmediandk",
