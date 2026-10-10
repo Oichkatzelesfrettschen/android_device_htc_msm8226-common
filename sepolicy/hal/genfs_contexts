@@ -1,3 +1,7 @@
 # The thermal HAL lists /sys/devices/virtual/thermal and reads each
 # thermal_zoneN/type and temp; the tsens and pm8226 zones register there.
 genfscon sysfs /devices/virtual/thermal u:object_r:sysfs_thermal:s0
+
+# The platform labels the timed_output enable node sysfs_vibrator; voltage_level
+# sits beside it and takes the same type.
+genfscon sysfs /devices/virtual/timed_output/vibrator/voltage_level u:object_r:sysfs_vibrator:s0
