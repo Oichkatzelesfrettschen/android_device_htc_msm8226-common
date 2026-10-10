@@ -1,0 +1,5 @@
+# ffmpeg version n9.0.1 Copyright (c) 2000-2026 the FFmpeg developers
+bytes=200220 ch=0 csd0=0 csd1=0 h=240 index=0 keys=9 mime=video/divx packets=100 rate=0 transform=verbatim video=1 w=320
+packets_sha256=1f4d034b930e595cda7c0f4a7c66f238cf4982d22cdd4a8458fe3788ed1c4916
+bytes=32391 ch=1 csd0=0 csd1=0 h=0 index=1 keys=155 mime=audio/mpeg packets=155 rate=44100 transform=mp3frames video=0 w=0
+packets_sha256=a2c541220bed9cc10818d6a68e1b6dff47a5cf8ecfc29ca30a398e31715f59ac

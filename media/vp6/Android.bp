@@ -1,0 +1,109 @@
+// On2 VP6 and VP6A software decoder for FLV video: the FFmpeg VP6 decoder
+// (third_party/ffmpeg, LGPL-2.1-or-later) behind a Codec2 component.
+
+// The decoder core. FFmpeg's range-decoder and hashing code relies on unsigned
+// wraparound, so the integer sanitizers stay off for it.
+cc_library_static {
+    name: "liba11vp6core",
+    vendor_available: true,
+    min_sdk_version: "29",
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.media.swcodec",
+    ],
+    srcs: [
+        "a11vp6.c",
+        "compat/compat.c",
+        "third_party/ffmpeg/libavcodec/h264chroma.c",
+        "third_party/ffmpeg/libavcodec/hpeldsp.c",
+        "third_party/ffmpeg/libavcodec/huffman.c",
+        "third_party/ffmpeg/libavcodec/mathtables.c",
+        "third_party/ffmpeg/libavcodec/videodsp.c",
+        "third_party/ffmpeg/libavcodec/vlc.c",
+        "third_party/ffmpeg/libavcodec/vp3dsp.c",
+        "third_party/ffmpeg/libavcodec/vp56.c",
+        "third_party/ffmpeg/libavcodec/vp56data.c",
+        "third_party/ffmpeg/libavcodec/vp6.c",
+        "third_party/ffmpeg/libavcodec/vp6dsp.c",
+        "third_party/ffmpeg/libavcodec/vpx_rac.c",
+        "third_party/ffmpeg/libavutil/reverse.c",
+    ],
+    arch: {
+        arm: {
+            // FFmpeg's ARM inline assembly (vpx_arith.h, mathops.h) uses
+            // predicated ARM-mode instructions without IT blocks.
+            instruction_set: "arm",
+            srcs: [
+                "third_party/ffmpeg/libavcodec/arm/h264chroma_init_arm.c",
+                "third_party/ffmpeg/libavcodec/arm/h264cmc_neon.S",
+                "third_party/ffmpeg/libavcodec/arm/hpeldsp_arm.S",
+                "third_party/ffmpeg/libavcodec/arm/hpeldsp_armv6.S",
+                "third_party/ffmpeg/libavcodec/arm/hpeldsp_init_arm.c",
+                "third_party/ffmpeg/libavcodec/arm/hpeldsp_init_armv6.c",
+                "third_party/ffmpeg/libavcodec/arm/hpeldsp_init_neon.c",
+                "third_party/ffmpeg/libavcodec/arm/hpeldsp_neon.S",
+                "third_party/ffmpeg/libavcodec/arm/videodsp_armv5te.S",
+                "third_party/ffmpeg/libavcodec/arm/videodsp_init_arm.c",
+                "third_party/ffmpeg/libavcodec/arm/videodsp_init_armv5te.c",
+                "third_party/ffmpeg/libavcodec/arm/vp3dsp_init_arm.c",
+                "third_party/ffmpeg/libavcodec/arm/vp3dsp_neon.S",
+            ],
+        },
+    },
+    // compat precedes the FFmpeg root so avcodec.h, config.h and the frame
+    // header resolve to the minimal replacements.
+    local_include_dirs: [
+        "compat",
+        "third_party/ffmpeg",
+        "third_party/ffmpeg/libavcodec",
+    ],
+    export_include_dirs: ["."],
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-sign-compare",
+        "-Wno-unused-parameter",
+        "-Wno-missing-field-initializers",
+        "-Wno-unused-function",
+        "-fno-strict-aliasing",
+    ],
+    sanitize: {
+        never: true,
+    },
+    // Vendored FFmpeg and its shims are checked by the host decode test.
+    tidy: false,
+}
+
+cc_library_shared {
+    name: "libcodec2_soft_a11vp6dec",
+    defaults: ["libcodec2_soft-defaults"],
+    srcs: ["C2SoftA11Vp6Dec.cpp"],
+    static_libs: ["liba11vp6core"],
+    tidy: true,
+    tidy_checks: [
+        "-*",
+        "bugprone-*",
+        "clang-analyzer-*",
+        "-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling",
+        "performance-*",
+        "cert-*",
+        "readability-braces-around-statements",
+        "-bugprone-easily-swappable-parameters",
+        "-bugprone-narrowing-conversions",
+        "-cert-err58-cpp",
+        "-cert-dcl37-c",
+        "-cert-dcl51-cpp",
+        "-cert-err33-c",
+        "-cert-err34-c",
+        "-bugprone-multi-level-implicit-pointer-conversion",
+        // Reported inside the framework header the module includes.
+        "-clang-analyzer-cplusplus.NewDeleteLeaks",
+    ],
+    tidy_checks_as_errors: ["*"],
+    sanitize: {
+        misc_undefined: [
+            "signed-integer-overflow",
+            "unsigned-integer-overflow",
+        ],
+    },
+}

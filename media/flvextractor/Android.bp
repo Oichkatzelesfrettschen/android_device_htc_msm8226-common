@@ -1,0 +1,51 @@
+// MediaExtractorFactory loads every *extractor.so under
+// /system_ext/lib/extractors into media.extractor's default namespace and
+// registers the GETEXTRACTORDEF it exports.
+cc_library_shared {
+    name: "libflvextractor",
+    system_ext_specific: true,
+    relative_install_path: "extractors",
+    srcs: [
+        "FlvExtractor.cpp",
+    ],
+    static_libs: ["liba11containers"],
+    tidy: true,
+    tidy_checks: [
+        "-*",
+        "bugprone-*",
+        "clang-analyzer-*",
+        "-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling",
+        "performance-*",
+        "cert-*",
+        "readability-braces-around-statements",
+        "-bugprone-easily-swappable-parameters",
+        "-bugprone-narrowing-conversions",
+        "-cert-err58-cpp",
+        "-cert-dcl37-c",
+        "-cert-dcl51-cpp",
+        "-cert-err33-c",
+        "-cert-err34-c",
+        "-bugprone-multi-level-implicit-pointer-conversion",
+        // Reported inside the framework header the module includes.
+        "-clang-analyzer-nullability.NullableDereferenced",
+    ],
+    tidy_checks_as_errors: ["*"],
+    shared_libs: [
+        "liblog",
+        "libmediandk",
+        "libutils",
+    ],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fvisibility=hidden",
+    ],
+    sanitize: {
+        cfi: true,
+        misc_undefined: [
+            "signed-integer-overflow",
+            "unsigned-integer-overflow",
+        ],
+    },
+}

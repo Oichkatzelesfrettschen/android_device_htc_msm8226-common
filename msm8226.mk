@@ -159,10 +159,15 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_telephony.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video_le.xml \
-    device/htc/msm8226-common/configs/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml
+    device/htc/msm8226-common/configs/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml \
+    device/htc/msm8226-common/configs/media_codecs_c2.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_c2.xml
 
 # ASF demuxer for the WMA, VC-1 and MPEG-4 streams in .wma, .wmv and .asf files.
 PRODUCT_PACKAGES += libasfextractor
+
+# AVI demuxer for the DivX, MPEG-4, MP3, AAC and PCM streams in .avi files, and
+# FLV demuxer for the Sorenson Spark, MP3 and AAC streams in .flv files.
+PRODUCT_PACKAGES += libaviextractor libflvextractor
 
 # Network
 PRODUCT_PACKAGES += liba11-legacy-radio
