@@ -1,0 +1,11 @@
+# The HAL reads thermal_zoneN/type and temp through /sys/devices/virtual/thermal
+# (sysfs_thermal, labeled in genfs_contexts) and opens a uevent socket for the
+# thermal watcher. thermal_info_config.json names no cooling device and no
+# monitored sensor, so the zone files are read-only. The HAL also connects to
+# the power HAL as a client.
+allow hal_thermal_default sysfs_thermal:dir r_dir_perms;
+allow hal_thermal_default sysfs_thermal:file r_file_perms;
+allow hal_thermal_default sysfs_thermal:lnk_file r_file_perms;
+allow hal_thermal_default self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
+
+hal_client_domain(hal_thermal_default, hal_power)
