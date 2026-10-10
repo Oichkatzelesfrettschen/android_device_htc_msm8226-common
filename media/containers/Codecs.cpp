@@ -217,7 +217,7 @@ bool SkipScalingList(BitReader *br, unsigned count) {
             if (!br->se(&delta)) {
                 return false;
             }
-            next = (last + delta + 256) & 255;
+            next = static_cast<int32_t>((static_cast<int64_t>(last) + delta + 256) & 255);
         }
         last = next == 0 ? last : next;
     }
