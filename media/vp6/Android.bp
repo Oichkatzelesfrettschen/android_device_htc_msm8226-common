@@ -30,6 +30,9 @@ cc_library_static {
     ],
     arch: {
         arm: {
+            // FFmpeg's ARM inline assembly (vpx_arith.h, mathops.h) uses
+            // predicated ARM-mode instructions without IT blocks.
+            instruction_set: "arm",
             srcs: [
                 "third_party/ffmpeg/libavcodec/arm/h264chroma_init_arm.c",
                 "third_party/ffmpeg/libavcodec/arm/h264cmc_neon.S",
