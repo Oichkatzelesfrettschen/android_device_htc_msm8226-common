@@ -191,8 +191,11 @@
              /dev/msm_multi_aac (audio_multi_aac.c, the 5.1 decoder). Both
              register the audio_decoder.aac role. MediaCodecList sorts
              ascending by rank and c2.android.aac.decoder ranks 8, so the
-             rows set 4 and 5 to sort ahead of it; the stereo component comes
-             first and the 5.1 component second. -->
+             rows set 4 and 5 to sort ahead of it. The channel-count limits
+             become the details keys max-channel-count 2 and 6, which
+             MediaCodecList::codecHandlesFormat compares with the stream's
+             channel-count: a stereo stream selects aac, a 5.1 stream selects
+             multiaac. -->
         <MediaCodec name="OMX.qcom.audio.decoder.aac" type="audio/mp4a-latm" rank="4" >
             <Limit name="channel-count" max="2" />
             <Limit name="sample-rate" ranges="8000,11025,12000,16000,22050,24000,32000,44100,48000" />
