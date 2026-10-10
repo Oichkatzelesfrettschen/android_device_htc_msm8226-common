@@ -55,10 +55,6 @@ cc_library_static {
         "third_party/ffmpeg/libavcodec",
     ],
     export_include_dirs: ["."],
-    asflags: [
-        "-Icompat",
-        "-Ithird_party/ffmpeg",
-    ],
     cflags: [
         "-Wall",
         "-Werror",
@@ -98,7 +94,7 @@ cc_library_shared {
         "-cert-err34-c",
         "-bugprone-multi-level-implicit-pointer-conversion",
     ],
-    tidy_flags: ["-warnings-as-errors=*"],
+    tidy_checks_as_errors: ["*"],
     sanitize: {
         misc_undefined: [
             "signed-integer-overflow",

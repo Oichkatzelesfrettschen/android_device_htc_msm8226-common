@@ -27,7 +27,7 @@ cc_library_shared {
         "-cert-err34-c",
         "-bugprone-multi-level-implicit-pointer-conversion",
     ],
-    tidy_flags: ["-warnings-as-errors=*"],
+    tidy_checks_as_errors: ["*"],
     shared_libs: [
         "liblog",
         "libmediandk",
