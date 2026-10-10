@@ -1,0 +1,3 @@
+# FMRadio runs in system_app (platform certificate, android.uid.system) and
+# issues V4L2 ioctls on a read-only descriptor of the Iris tuner node.
+allow system_app htc_fm_radio_device:chr_file r_file_perms;
