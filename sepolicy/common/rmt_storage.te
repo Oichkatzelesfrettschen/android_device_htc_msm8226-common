@@ -6,6 +6,7 @@ init_daemon_domain(rmt_storage)
 # Only those partitions carry a11_modem_efs_block_device.
 allow rmt_storage block_device:dir search;
 allow rmt_storage a11_modem_efs_block_device:blk_file rw_file_perms;
+allow rmt_storage a11_ssd_block_device:blk_file rw_file_perms;
 wakelock_use(rmt_storage)
 
 # The transfer buffer is the rmtfs UIO region: the daemon finds it through
