@@ -44,6 +44,7 @@
 /(vendor|system/vendor)/bin/hw/android\.hardware\.power-service-qti    u:object_r:hal_power_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.gatekeeper@1\.0-service\.software    u:object_r:hal_gatekeeper_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.light@2\.0-service\.htc_msm8226    u:object_r:hal_light_default_exec:s0
+/(vendor|system/vendor)/bin/hw/vendor\.lineage\.touch@1\.0-service\.htc_msm8226    u:object_r:hal_lineage_touch_default_exec:s0
 /(vendor|system/vendor)/bin/wcnss_service    u:object_r:htc_wcnss_service_exec:s0
 /(vendor|system/vendor)/bin/timekeep    u:object_r:htc_timekeep_exec:s0
 /(vendor|system/vendor)/bin/hci_qcomm_init    u:object_r:htc_bluetooth_loader_exec:s0

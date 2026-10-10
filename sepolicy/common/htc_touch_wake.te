@@ -1,0 +1,6 @@
+# vendor.lineage.touch@1.0-service.htc_msm8226 enables the Himax wake
+# gestures by writing 0 or 1 to /sys/android_touch/sweep2wake and
+# /sys/android_touch/doubletap2wake, which init hands to the system user once
+# the touchscreen driver has registered them.
+allow hal_lineage_touch_default htc_sysfs_touch_wake:dir search;
+allow hal_lineage_touch_default htc_sysfs_touch_wake:file rw_file_perms;
