@@ -336,8 +336,11 @@
              2. OMX.qcom.video.decoder.hevc.q6 opens the q6 HFI core
                 (/dev/video34), HEVC firmware on the Hexagon aDSP. Its
                 qcom,max-hw-load of 108000 bounds a session to 1280x720 at
-                30 fps, and one such session fills it. It serves a clip when
-                the Venus session is unavailable. -->
+                30 fps, and one such session fills it. It ranks 768, after
+                the Codec2 software decoder: MediaCodec::CreateByType tries the
+                next component only when init() fails, and the q6 session
+                fails later, at output-buffer dequeue, so a q6 row ahead of
+                software ends playback instead of falling through. -->
         <MediaCodec name="OMX.qcom.video.decoder.hevc" type="video/hevc" rank="250" >
             <Quirk name="requires-allocate-on-input-ports" />
             <Quirk name="requires-allocate-on-output-ports" />
@@ -351,7 +354,7 @@
             <Feature name="adaptive-playback" />
             <Limit name="concurrent-instances" max="13" />
         </MediaCodec>
-        <MediaCodec name="OMX.qcom.video.decoder.hevc.q6" type="video/hevc" rank="252" >
+        <MediaCodec name="OMX.qcom.video.decoder.hevc.q6" type="video/hevc" rank="768" >
             <Quirk name="requires-allocate-on-input-ports" />
             <Quirk name="requires-allocate-on-output-ports" />
             <Quirk name="requires-timestamp-reorder" />
