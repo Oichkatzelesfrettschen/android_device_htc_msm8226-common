@@ -106,6 +106,23 @@ service wcnss-service /vendor/bin/wcnss_service
     group system wifi radio diag
     oneshot
 
+# qseecomd starts as root, registers the secure file system, RPMB and SSD
+# listeners over /dev/qseecom, then drops to system. It and the listener
+# libraries it loads import HTC liblog's __htclog_init_mask, which
+# liba11-legacy-radio.so provides; the preload also reaches its forked child.
+service qseecomd /vendor/bin/qseecomd
+    class main
+    user root
+    group root
+    setenv LD_PRELOAD /vendor/lib/liba11-legacy-radio.so
+
+# adsprpcd answers aDSP FastRPC requests through /dev/adsprpc-smd, which
+# ueventd creates 0664 system:system, so the media user opens it read-only.
+service adsprpcd /vendor/bin/adsprpcd
+    class main
+    user media
+    group media
+
 # The HAL and daemon exchange V4L2 events and per-camera Unix sockets.
 service qcamerasvr /vendor/bin/mm-qcamera-daemon
     class late_start
