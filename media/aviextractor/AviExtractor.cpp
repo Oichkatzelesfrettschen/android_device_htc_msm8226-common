@@ -46,6 +46,20 @@ constexpr uint32_t kMaxIndexEntries = 4u << 20;
 constexpr uint32_t kMaxDimension = 4096;
 constexpr uint32_t kIdx1KeyFrame = 0x10;
 
+// Fourcc comparison is case-insensitive: encoders write both "DIVX" and
+// "divx". Only bytes in 'a'..'z' fold; digits keep their value.
+constexpr uint32_t FoldUpper(uint32_t c) {
+    uint32_t folded = 0;
+    for (int shift = 0; shift < 32; shift += 8) {
+        uint32_t b = (c >> shift) & 0xFF;
+        if (b >= 'a' && b <= 'z') {
+            b -= 'a' - 'A';
+        }
+        folded |= b << shift;
+    }
+    return folded;
+}
+
 uint32_t Le32(const uint8_t *p) {
     return (uint32_t)p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24);
 }
@@ -87,10 +101,7 @@ struct Stream {
 
 bool DescribeVideo(Stream *s) {
     const uint32_t c = s->compression ? s->compression : s->handler;
-    // Fourcc comparison is case-insensitive: encoders write both "DIVX" and
-    // "divx".
-    uint32_t upper = c & 0xDFDFDFDFu;
-    switch (upper) {
+    switch (FoldUpper(c)) {
         case FourCC('D', 'I', 'V', '3'):  // DivX 3 low motion
         case FourCC('D', 'I', 'V', '4'):  // DivX 3 fast motion
         case FourCC('D', 'I', 'V', '5'):
@@ -340,6 +351,7 @@ private:
             }
         }
         std::vector<uint64_t> bytes(mStreams.size(), 0);
+        std::vector<uint64_t> chunks(mStreams.size(), 0);
         for (size_t i = 0; i < count; ++i) {
             const uint8_t *e = idx1.data() + i * 16;
             const char d0 = (char)e[0];
@@ -355,6 +367,9 @@ private:
             const uint32_t flags = Le32(e + 4);
             const uint64_t offset = base + Le32(e + 8) + 8;
             const uint32_t size = Le32(e + 12);
+            // A zero-size video chunk is a dropped frame: it keeps its slot
+            // on the timeline and carries no packet.
+            const uint64_t index = chunks[n]++;
             if (size == 0 || size > kMaxChunk || offset + size > moviEnd) {
                 continue;
             }
@@ -362,7 +377,6 @@ private:
             p.offset = offset;
             p.size = size;
             p.key = s.video ? (flags & kIdx1KeyFrame) != 0 : true;
-            const uint64_t index = s.packets.size();
             if (s.sampleSize > 0 && !s.video) {
                 p.timeUs = (int64_t)((bytes[n] / s.sampleSize) * s.scale * 1000000ull / s.rate);
             } else {
@@ -379,6 +393,7 @@ private:
     // packets; only the first video chunk is known to be a sync frame.
     void scanMovi(uint64_t pos, uint64_t end) {
         std::vector<uint64_t> bytes(mStreams.size(), 0);
+        std::vector<uint64_t> chunks(mStreams.size(), 0);
         uint32_t guard = 0;
         while (pos + 8 <= end && guard++ < kMaxIndexEntries) {
             uint8_t ch[12];
@@ -397,15 +412,19 @@ private:
             }
             const char d0 = (char)ch[0];
             const char d1 = (char)ch[1];
-            if (d0 >= '0' && d0 <= '9' && d1 >= '0' && d1 <= '9' && size > 0 && size <= kMaxChunk) {
+            if (d0 >= '0' && d0 <= '9' && d1 >= '0' && d1 <= '9' && size <= kMaxChunk) {
                 const size_t n = (size_t)((d0 - '0') * 10 + (d1 - '0'));
                 if (n < mStreams.size() && mStreams[n].valid) {
                     Stream &s = mStreams[n];
+                    const uint64_t index = chunks[n]++;
+                    if (size == 0) {
+                        pos = body + size + (size & 1);
+                        continue;
+                    }
                     Packet p;
                     p.offset = body;
                     p.size = size;
                     p.key = !s.video;
-                    const uint64_t index = s.packets.size();
                     if (s.sampleSize > 0 && !s.video) {
                         p.timeUs = (int64_t)((bytes[n] / s.sampleSize) * s.scale * 1000000ull / s.rate);
                     } else {
