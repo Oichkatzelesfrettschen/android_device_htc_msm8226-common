@@ -164,6 +164,10 @@ PRODUCT_COPY_FILES += \
 # ASF demuxer for the WMA, VC-1 and MPEG-4 streams in .wma, .wmv and .asf files.
 PRODUCT_PACKAGES += libasfextractor
 
+# AVI demuxer for the DivX, MPEG-4, MP3, AAC and PCM streams in .avi files, and
+# FLV demuxer for the Sorenson Spark, MP3 and AAC streams in .flv files.
+PRODUCT_PACKAGES += libaviextractor libflvextractor
+
 # Network
 PRODUCT_PACKAGES += liba11-legacy-radio
 
