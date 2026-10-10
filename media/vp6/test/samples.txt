@@ -1,0 +1,3 @@
+# name  url  sha256  (public FFmpeg FATE-style samples; fetched, never committed)
+vp6.flv https://samples.ffmpeg.org/FLV/asian-commercials-are-weird.flv 5cff40c74a1eda3732037ef7d0214506bb8fb95d01c32e05e1694be3e36dec52
+vp6a.flv https://samples.ffmpeg.org/FLV/flash_with_alpha/300x180-Scr-f8-056alpha.flv 7f4925da2a8fec9822c823ccf16794cc1a0aa7779c7d2f0d83e62ef0a8e054cb

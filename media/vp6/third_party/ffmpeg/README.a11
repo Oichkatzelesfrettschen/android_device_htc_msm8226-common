@@ -1,0 +1,18 @@
+FFmpeg VP6 decoder subset
+=========================
+
+Source: FFmpeg 9.0.1, https://ffmpeg.org/releases/ffmpeg-9.0.1.tar.xz
+Archive sha256: cf38e0e28c7e5605942c4a77755349b0145804a397af37eb1fb4c77cb237f635
+License: LGPL-2.1-or-later (COPYING.LGPLv2.1). The files below are unmodified
+copies; the replacement headers and glue live in ../../compat.
+
+libavcodec: vp6.c vp56.c vp56.h vp56data.c vp56data.h vp56dsp.h vp6data.h
+vp6dsp.c vpx_rac.c vpx_rac.h vp3dsp.c vp3dsp.h huffman.c huffman.h vlc.c vlc.h
+hpeldsp.c hpeldsp.h hpel_template.c pixels.h pel_template.c h264chroma.c
+h264chroma.h h264chroma_template.c videodsp.c videodsp.h videodsp_template.c
+bit_depth_template.c bytestream.h rnd_avg.h mathops.h get_bits.h bitstream.h
+defs.h, plus mathtables.c (header and ff_zigzag_direct only) and the arm/
+NEON and ARMv6 sources for vp3dsp, hpeldsp, h264chroma and videodsp.
+libavutil: headers, arm/ headers and asm.S, and reverse.c.
+
+Not built here: the VP5 and VP8 decoders, the encoders, any other codec.

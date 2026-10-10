@@ -1,0 +1,24 @@
+# Checks the AVI, FLV and VP6 glue code is held to (third_party/ is excluded).
+# security.insecureAPI.DeprecatedOrUnsafeBufferHandling flags every memcpy and
+# memset; bounds are checked at each call site instead.
+Checks: >
+  -*,
+  bugprone-*,
+  clang-analyzer-*,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  performance-*,
+  cert-*,
+  readability-braces-around-statements,
+  readability-container-size-empty,
+  modernize-use-nullptr,
+  modernize-use-override,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-narrowing-conversions,
+  -cert-err58-cpp,
+  -cert-dcl37-c,
+  -cert-dcl51-cpp,
+  -cert-err33-c,
+  -cert-err34-c,
+  -bugprone-multi-level-implicit-pointer-conversion
+WarningsAsErrors: '*'
+HeaderFilterRegex: 'media/(containers|vp6/[^t]|vp6/compat)'

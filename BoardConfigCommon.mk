@@ -71,6 +71,12 @@ $(call soong_config_set,camera,legacy_hal1,true)
 # frameworks/av lists the Qualcomm WMA, AMR-WB+ and VC-1 OMX decoders in
 # GetComponentRole and configures them in ACodec when this is set.
 $(call soong_config_set,stagefright,omx_legacy_qcom_codecs,true)
+# Adds libcodec2_soft_a11vp6dec (media/vp6) to the software Codec2 runtime libraries.
+$(call soong_config_set,stagefright,a11_vp6_codec2,true)
+# The VP6 component and its core join the com.android.media.swcodec apex, whose
+# allowed_deps.txt in packages/modules/common lists only platform modules; the
+# product skips that list check instead of editing the shared project.
+UNSAFE_DISABLE_APEX_ALLOWED_DEPS_CHECK := true
 
 # Dexpreopt
 ifeq ($(HOST_OS),linux)
