@@ -1,0 +1,2 @@
+# libfmjni sets hw.fm.init to 1 when the Iris tuner opens and to 0 when it closes.
+set_prop(system_app, htc_fm_init_prop)

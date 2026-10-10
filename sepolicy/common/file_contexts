@@ -23,17 +23,29 @@
 /(vendor|system/vendor)/bin/rmt_storage    u:object_r:rmt_storage_exec:s0
 /(vendor|system/vendor)/bin/qmuxd    u:object_r:qmuxd_exec:s0
 /(vendor|system/vendor)/bin/netmgrd    u:object_r:netmgrd_exec:s0
-/dev/block/mmcblk0p(18|19|25|26|33|34|35)    u:object_r:a11_modem_efs_block_device:s0
+/dev/block/mmcblk0p(18|19|25|26|33|34)    u:object_r:a11_modem_efs_block_device:s0
+/dev/block/mmcblk0p35    u:object_r:a11_ssd_block_device:s0
 /dev/block/mmcblk0    u:object_r:a11_emmc_disk_block_device:s0
 /dev/smdcntl[0-9]+    u:object_r:a11_smd_radio_device:s0
 /dev/radio(/.*)?    u:object_r:a11_qcril_device:s0
+/dev/radio0    u:object_r:htc_fm_radio_device:s0
 /dev/smdcnt_rev[0-9]+    u:object_r:a11_smd_radio_device:s0
 /sys/devices/fd80000\.rmtfs_sharedmem/uio(/.*)?    u:object_r:a11_sysfs_uio:s0
 /sys/devices/virtual/smdpkt(/.*)?    u:object_r:a11_sysfs_smdpkt:s0
 
+# TrustZone and aDSP FastRPC daemons. mmcblk0p35 (ssd) holds the secure
+# storage metadata that qseecomd serves; mmcblk0rpmb is the eMMC RPMB
+# partition it reaches through MMC_IOC_CMD.
+/(vendor|system/vendor)/bin/qseecomd    u:object_r:tee_exec:s0
+/(vendor|system/vendor)/bin/adsprpcd    u:object_r:adsprpcd_exec:s0
+/dev/qseecom    u:object_r:tee_device:s0
+/dev/adsprpc-smd    u:object_r:a11_adsprpc_device:s0
+/dev/block/mmcblk0rpmb    u:object_r:a11_rpmb_block_device:s0
+
 /(vendor|system/vendor)/bin/hw/android\.hardware\.power-service-qti    u:object_r:hal_power_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.gatekeeper@1\.0-service\.software    u:object_r:hal_gatekeeper_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.light@2\.0-service\.htc_msm8226    u:object_r:hal_light_default_exec:s0
+/(vendor|system/vendor)/bin/hw/vendor\.lineage\.touch@1\.0-service\.htc_msm8226    u:object_r:hal_lineage_touch_default_exec:s0
 /(vendor|system/vendor)/bin/wcnss_service    u:object_r:htc_wcnss_service_exec:s0
 /(vendor|system/vendor)/bin/timekeep    u:object_r:htc_timekeep_exec:s0
 /(vendor|system/vendor)/bin/hci_qcomm_init    u:object_r:htc_bluetooth_loader_exec:s0
@@ -164,6 +176,7 @@
 /(vendor|system/vendor)/lib/libmmjpeg_interface\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/libmmqjpeg_codec\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/libnetmgr\.so    u:object_r:vendor_shim_target_file:s0
+/(vendor|system/vendor)/lib/libOmxAacDec\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/libOmxAmrwbplusDec\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/libOmxWmaDec\.so    u:object_r:vendor_shim_target_file:s0
 /(vendor|system/vendor)/lib/liboemcamera\.so    u:object_r:vendor_shim_target_file:s0
@@ -197,7 +210,7 @@
 
 # qdsp6v2 capture-codec misc devices.
 /dev/msm_(aac|amrnb|evrc|qcelp)_in    u:object_r:a11_dsp_encoder_device:s0
-/dev/msm_(wma|wmapro|amrwbplus)      u:object_r:a11_dsp_decoder_device:s0
+/dev/msm_(wma|wmapro|amrwbplus|aac|multi_aac)      u:object_r:a11_dsp_decoder_device:s0
 
 # qdsp6v2 calibration nodes. libacdbloader in the audio HAL pushes the ACDB
 # device calibration through msm_acdb ioctls, and libacdbrtac registers its
