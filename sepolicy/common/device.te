@@ -1,0 +1,2 @@
+# The V4L2 radio node radio-iris registers for the WCN3620 FM receiver.
+type htc_fm_radio_device, dev_type;
