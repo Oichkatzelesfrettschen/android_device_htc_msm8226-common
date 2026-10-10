@@ -27,6 +27,7 @@
 /dev/block/mmcblk0    u:object_r:a11_emmc_disk_block_device:s0
 /dev/smdcntl[0-9]+    u:object_r:a11_smd_radio_device:s0
 /dev/radio(/.*)?    u:object_r:a11_qcril_device:s0
+/dev/radio0    u:object_r:htc_fm_radio_device:s0
 /dev/smdcnt_rev[0-9]+    u:object_r:a11_smd_radio_device:s0
 /sys/devices/fd80000\.rmtfs_sharedmem/uio(/.*)?    u:object_r:a11_sysfs_uio:s0
 /sys/devices/virtual/smdpkt(/.*)?    u:object_r:a11_sysfs_smdpkt:s0
