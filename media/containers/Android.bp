@@ -2,7 +2,6 @@
 // plugins, and by the host test harness.
 cc_library_static {
     name: "liba11containers",
-    system_ext_specific: true,
     srcs: [
         "AviParser.cpp",
         "Codecs.cpp",
@@ -28,7 +27,7 @@ cc_library_static {
         "-cert-err34-c",
         "-bugprone-multi-level-implicit-pointer-conversion",
     ],
-    tidy_flags: ["-warnings-as-errors=*"],
+    tidy_checks_as_errors: ["*"],
     cflags: [
         "-Wall",
         "-Wextra",
