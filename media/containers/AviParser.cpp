@@ -426,7 +426,7 @@ private:
         if (id[0] < '0' || id[0] > '9' || id[1] < '0' || id[1] > '9') {
             return nullptr;
         }
-        const size_t n = static_cast<size_t>((id[0] - '0') * 10 + (id[1] - '0'));
+        const size_t n = static_cast<size_t>(id[0] - '0') * 10 + static_cast<size_t>(id[1] - '0');
         return n < mStreams.size() && mStreams[n].valid ? &mStreams[n] : nullptr;
     }
 

@@ -102,7 +102,7 @@ struct Sample {
 // Sequential reader over one track.
 class TrackReader {
 public:
-    enum class Status { kOk, kEndOfStream, kIoError, kMalformed };
+    enum class Status : uint8_t { kOk, kEndOfStream, kIoError, kMalformed };
 
     TrackReader(ByteSource *source, const TrackInfo *track) : mSource(source), mTrack(track) {}
 

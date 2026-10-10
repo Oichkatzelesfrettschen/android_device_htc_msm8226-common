@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Attributes of the Codec2 software components this device adds to the
+     platform set. c2.a11.vp6.decoder is the FFmpeg VP6 decoder in
+     media/vp6; Venus has no VP6 bit (HFI_VIDEO_CODEC_VP6 0x400 is absent
+     from the 0x33fe decode mask) and VP6 is not bitstream-compatible with
+     VP8, so the CPU decodes it. The limits bound real-time decoding on the
+     Cortex-A7 cores to 720p at 30 fps. -->
+<MediaCodecs>
+    <Decoders>
+        <MediaCodec name="c2.a11.vp6.decoder" type="video/x-vnd.on2.vp6" >
+            <Limit name="size" min="16x16" max="1280x720" />
+            <Limit name="alignment" value="2x2" />
+            <Limit name="block-size" value="16x16" />
+            <Limit name="block-count" range="1-3600" />
+            <Limit name="blocks-per-second" range="1-108000" />
+            <Limit name="bitrate" range="1-8000000" />
+            <Attribute name="software-codec" />
+        </MediaCodec>
+    </Decoders>
+</MediaCodecs>
