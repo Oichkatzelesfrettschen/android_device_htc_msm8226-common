@@ -1,0 +1,24 @@
+# qseecomd runs in the tee domain. It starts as root, registers the secure
+# file system, RPMB and SSD listeners with the TrustZone kernel module through
+# /dev/qseecom, then drops to the system user. The domain, its exec type and
+# the /dev/qseecom write grants come from the platform vendor policy.
+type a11_ssd_block_device, dev_type;
+type a11_rpmb_block_device, dev_type;
+
+allow tee self:capability { setuid setgid chown sys_admin sys_rawio };
+
+# The listeners open the ssd and RPMB partitions through the by-name links.
+allow tee block_device:dir search;
+allow tee block_device:lnk_file r_file_perms;
+allow tee a11_ssd_block_device:blk_file rw_file_perms;
+
+# RPMB access is MMC_IOC_CMD (_IOWR(0xb3, 0, struct mmc_ioc_cmd)).
+allow tee a11_rpmb_block_device:blk_file rw_file_perms;
+allowxperm tee a11_rpmb_block_device:blk_file ioctl { 0xb300 };
+
+# The secure file system listener stores its files under /persist.
+allow tee persist_file:dir create_dir_perms;
+allow tee persist_file:file create_file_perms;
+
+# The keymaster and listener images load from the firmware partitions.
+r_dir_file(tee, firmware_file)
