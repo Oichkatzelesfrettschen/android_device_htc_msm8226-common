@@ -188,7 +188,7 @@ C2SoftA11Vp6Dec::C2SoftA11Vp6Dec(const char *name, c2_node_id_t id,
       mIntf(intfImpl) {}
 
 C2SoftA11Vp6Dec::~C2SoftA11Vp6Dec() {
-    onRelease();
+    closeDecoder();
 }
 
 c2_status_t C2SoftA11Vp6Dec::onInit() {

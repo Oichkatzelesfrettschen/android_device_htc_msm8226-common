@@ -96,6 +96,8 @@ cc_library_shared {
         "-cert-err33-c",
         "-cert-err34-c",
         "-bugprone-multi-level-implicit-pointer-conversion",
+        // Reported inside the framework header the module includes.
+        "-clang-analyzer-cplusplus.NewDeleteLeaks",
     ],
     tidy_checks_as_errors: ["*"],
     sanitize: {
