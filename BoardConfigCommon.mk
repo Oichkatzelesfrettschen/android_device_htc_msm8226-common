@@ -87,6 +87,13 @@ MAX_EGL_CACHE_KEY_SIZE := 12*1024
 # of the device.
 MAX_EGL_CACHE_SIZE := 2048*1024
 
+# FM Radio
+# The Iris SMD transport is built into the kernel and registers on the first
+# open of /dev/radio0, so libfmjni downloads no firmware and starts no loader
+# service; its only handshake is the hw.fm.init readiness property.
+$(call soong_config_set,libfmjni,vendor,qcom)
+$(call soong_config_set_bool,libfmjni,no_fm_firmware,true)
+
 # Filesystem
 TARGET_FS_CONFIG_GEN := device/htc/msm8226-common/config.fs
 
