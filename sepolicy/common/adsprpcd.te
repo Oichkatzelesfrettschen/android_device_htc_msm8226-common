@@ -1,0 +1,11 @@
+# adsprpcd serves the aDSP FastRPC default listener: it opens
+# /dev/adsprpc-smd read-only, issues the listener ioctls and maps the shared
+# ION buffers. The skel libraries it hands to the DSP are vendor_file reads.
+type adsprpcd, domain;
+type adsprpcd_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(adsprpcd)
+
+type a11_adsprpc_device, dev_type;
+
+allow adsprpcd a11_adsprpc_device:chr_file r_file_perms;
+allow adsprpcd ion_device:chr_file r_file_perms;
