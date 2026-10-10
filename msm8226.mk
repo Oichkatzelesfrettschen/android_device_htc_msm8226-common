@@ -99,6 +99,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     fastbootd
 
+# FM Radio: the app opens the Iris tuner through libfmjni's Qualcomm backend.
+PRODUCT_PACKAGES += \
+    FMRadio \
+    libfmjni
+
 # Gatekeeper
 PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-service.software
