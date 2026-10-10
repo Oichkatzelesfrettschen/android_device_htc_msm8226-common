@@ -1,0 +1,26 @@
+// Container tables and track readers shared by the AVI and FLV extractor
+// plugins, and by the host test harness.
+cc_library_static {
+    name: "liba11containers",
+    system_ext_specific: true,
+    srcs: [
+        "AviParser.cpp",
+        "Codecs.cpp",
+        "FlvParser.cpp",
+        "TrackReader.cpp",
+    ],
+    export_include_dirs: ["."],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fvisibility=hidden",
+    ],
+    sanitize: {
+        cfi: true,
+        misc_undefined: [
+            "signed-integer-overflow",
+            "unsigned-integer-overflow",
+        ],
+    },
+}
