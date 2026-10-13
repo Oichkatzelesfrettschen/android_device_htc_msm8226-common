@@ -8,6 +8,7 @@
 #include "Tracks.h"
 
 #include <algorithm>
+#include <string.h>
 
 namespace a11 {
 
@@ -15,10 +16,11 @@ bool TrackReader::seek(int64_t value, SeekMode mode, int64_t *targetUs) {
     const std::vector<Packet> &p = mTrack->packets;
     const size_t n = p.size();
     *targetUs = -1;
-    mPending.clear();
-    mPendingPos = 0;
-    mCarry.clear();
-    mMp3AnchorUs = -1;
+    mMp3Begin = 0;
+    mMp3End = 0;
+    mMp3PacketPos = 0;
+    mMp3Anchored = false;
+    mMp3AnchorUs = 0;
     mMp3Samples = 0;
     mNext = n;
     if (n == 0) {
@@ -92,57 +94,72 @@ TrackReader::Status TrackReader::readPacket(const Packet &packet, std::vector<ui
 }
 
 TrackReader::Status TrackReader::nextMp3(Sample *out) {
-    const std::vector<Packet> &p = mTrack->packets;
-    while (mPendingPos >= mPending.size()) {
-        mPending.clear();
-        mPendingPos = 0;
-        if (mNext >= p.size()) {
-            return Status::kEndOfStream;
-        }
-        const Packet &packet = p[mNext++];
-        std::vector<uint8_t> raw;
-        Status st = readPacket(packet, &raw);
-        if (st != Status::kOk) {
-            return st;
-        }
-        // A packet that starts on a frame boundary (nothing carried) re-anchors
-        // frame timing at its container timestamp, so timestamp gaps survive;
-        // a carried partial frame keeps the running sample clock.
-        if (mMp3AnchorUs < 0 || mCarry.empty()) {
-            mMp3AnchorUs = packet.timeUs;
-            mMp3Samples = 0;
-        }
-        mCarry.insert(mCarry.end(), raw.begin(), raw.end());
-        size_t pos = 0;
-        while (pos + 4 <= mCarry.size()) {
-            Mp3Header h;
-            if (!ParseMp3Header(mCarry.data() + pos, mCarry.size() - pos, &h)) {
-                ++pos;
+    const std::vector<Packet> &packets = mTrack->packets;
+    while (true) {
+        while (mMp3End - mMp3Begin >= 4) {
+            Mp3Header header;
+            if (!ParseMp3Header(mMp3Buffer.data() + mMp3Begin,
+                    mMp3End - mMp3Begin, &header)) {
+                ++mMp3Begin;
                 continue;
             }
-            if (pos + h.frameBytes > mCarry.size()) {
+            if (header.frameBytes > mMp3End - mMp3Begin) {
                 break;
             }
-            Sample s;
-            s.data.assign(mCarry.begin() + static_cast<std::ptrdiff_t>(pos),
-                    mCarry.begin() + static_cast<std::ptrdiff_t>(pos + h.frameBytes));
-            int64_t offsetUs = 0;
-            if (!UnitsToUs(mMp3Samples, 1, static_cast<uint64_t>(h.sampleRate), &offsetUs)) {
+            int64_t offsetUs;
+            int64_t timeUs;
+            if (!UnitsToUs(mMp3Samples, 1, static_cast<uint64_t>(header.sampleRate), &offsetUs)
+                    || __builtin_add_overflow(mMp3AnchorUs, offsetUs, &timeUs)) {
                 return Status::kMalformed;
             }
-            s.timeUs = mMp3AnchorUs + offsetUs;
-            s.key = true;
-            mMp3Samples += h.samplesPerFrame;
-            mPending.push_back(std::move(s));
-            pos += h.frameBytes;
+            out->data.assign(mMp3Buffer.begin() + static_cast<std::ptrdiff_t>(mMp3Begin),
+                    mMp3Buffer.begin() + static_cast<std::ptrdiff_t>(mMp3Begin + header.frameBytes));
+            out->timeUs = timeUs;
+            out->key = true;
+            mMp3Samples += header.samplesPerFrame;
+            mMp3Begin += header.frameBytes;
+            return Status::kOk;
         }
-        mCarry.erase(mCarry.begin(), mCarry.begin() + static_cast<std::ptrdiff_t>(pos));
-        if (mCarry.size() > (64u << 10)) {
-            mCarry.clear();  // no frame sync in 64 KiB: resynchronize on the next chunk
+        if (mNext >= packets.size()) {
+            mMp3Begin = 0;
+            mMp3End = 0;
+            return Status::kEndOfStream;
+        }
+        // Scanning leaves at most three unsynchronized bytes or an incomplete
+        // frame. Compact that tail only when another source read is needed.
+        const size_t carried = mMp3End - mMp3Begin;
+        if (carried != 0 && mMp3Begin != 0) {
+            memmove(mMp3Buffer.data(), mMp3Buffer.data() + mMp3Begin, carried);
+        }
+        mMp3Begin = 0;
+        mMp3End = carried;
+        const Packet &packet = packets[mNext];
+        if (packet.size > kMaxPacketBytes) {
+            return Status::kMalformed;
+        }
+        // A new packet re-anchors the clock only at an empty frame boundary.
+        // Refills inside one packet and carried partial frames keep the clock.
+        if (mMp3PacketPos == 0 && (!mMp3Anchored || carried == 0)) {
+            mMp3AnchorUs = packet.timeUs;
+            mMp3Samples = 0;
+            mMp3Anchored = true;
+        }
+        const size_t bytes = std::min<size_t>(packet.size - mMp3PacketPos,
+                mMp3Buffer.size() - carried);
+        if (bytes != 0) {
+            uint64_t offset;
+            if (__builtin_add_overflow(packet.offset, mMp3PacketPos, &offset)
+                    || !ReadFully(mSource, offset, mMp3Buffer.data() + carried, bytes)) {
+                return Status::kIoError;
+            }
+        }
+        mMp3End += bytes;
+        mMp3PacketPos += static_cast<uint32_t>(bytes);
+        if (mMp3PacketPos == packet.size) {
+            ++mNext;
+            mMp3PacketPos = 0;
         }
     }
-    *out = std::move(mPending[mPendingPos++]);
-    return Status::kOk;
 }
 
 TrackReader::Status TrackReader::next(Sample *out) {

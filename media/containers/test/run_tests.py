@@ -4,15 +4,20 @@
 Generates media with ffmpeg, runs the harness over each file and checks track
 MIME types, geometry, parameter-set data, packet counts, timestamps, key flags,
 sizes, decodability of the converted samples, and seeks against ffprobe.
-Golden summaries live in expected/; large media is generated into a scratch
-directory and never committed.
+Unit tests check MP3 cross-chunk timing, seeks, and AVC expansion limits with
+ordinary allocation under AddressSanitizer and UndefinedBehaviorSanitizer.
+A separate A11_CONTAINER_ALLOCATION_PROBE build runs the same semantic tests
+and counts peak C++ heap payloads. Reader-object storage includes the 16 KiB
+MP3 window; those measurements exclude parser tables, allocator metadata, and
+runtime memory. They do not measure RSS or hardware decoder throughput.
+Golden summaries live in expected/; generated media stays in WORKDIR and is
+never committed.
 
 Usage: run_tests.py [--update] [--big] WORKDIR
 """
 import hashlib
 import json
 import os
-import re
 import subprocess
 import sys
 
@@ -180,11 +185,21 @@ def main():
     h = os.path.join(work, "harness")
     run(["clang++", "-std=c++17", "-Wall", "-Wextra", "-Werror", "-O1", "-g",
          "-fsanitize=address,undefined", "-I" + os.path.join(HERE, ".."), "-o", h] + SRC)
+    unit_flags = ["clang++", "-std=c++17", "-Wall", "-Wextra", "-Werror", "-O1", "-g",
+                  "-I" + os.path.join(HERE, "..")]
+    unit_sources = [os.path.join(HERE, "unit_tests.cpp")] + SRC[1:]
     ut = os.path.join(work, "unit_tests")
-    run(["clang++", "-std=c++17", "-Wall", "-Wextra", "-Werror", "-O1", "-g", "-fsanitize=address,undefined",
-         "-I" + os.path.join(HERE, ".."), "-o", ut, os.path.join(HERE, "unit_tests.cpp")] + SRC[1:])
-    check("unit tests ok" in run([ut]), "unit tests")
-    print("ok unit tests")
+    run(unit_flags + ["-fsanitize=address,undefined", "-o", ut] + unit_sources)
+    unit_output = run([ut])
+    check("unit tests ok" in unit_output, "sanitizer unit tests")
+    print("ASan/UBSan unit tests with ordinary allocation:")
+    print(unit_output, end="")
+    allocation_test = os.path.join(work, "unit_tests_allocations")
+    run(unit_flags + ["-DA11_CONTAINER_ALLOCATION_PROBE", "-o", allocation_test] + unit_sources)
+    allocation_output = run([allocation_test])
+    check("unit tests ok" in allocation_output, "allocation-counting unit tests")
+    print("Separate allocation-counting unit tests:")
+    print(allocation_output, end="")
     version = run(["ffmpeg", "-version"]).splitlines()[0]
     exp_dir = os.path.join(HERE, "expected")
     os.makedirs(exp_dir, exist_ok=True)

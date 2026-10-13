@@ -53,12 +53,14 @@ bool ParseAvcConfig(const uint8_t *data, size_t size, AvcConfig *out);
 bool ParseSpsDimensions(const uint8_t *nal, size_t size, int32_t *width, int32_t *height);
 
 // Rewrites length-prefixed NAL units as 00 00 00 01 prefixed ones. False when
-// a length runs past the data or is zero.
+// a length runs past the data, is zero, or the stored/expanded sample exceeds
+// kMaxPacketBytes. Validation precedes output allocation; failure clears out.
 bool AvcToAnnexB(const uint8_t *data, size_t size, int lengthSize, std::vector<uint8_t> *out);
 
 // Largest Annex B size of a length-prefixed sample of at most `size` bytes:
 // each NAL unit trades a lengthSize prefix for a 4-byte start code, and a
 // one-byte NAL unit gives the largest ratio, (4 + 1) / (lengthSize + 1).
+// The result saturates at the kMaxPacketBytes decoder-input ceiling.
 size_t AnnexBMaxSize(size_t size, int lengthSize);
 
 // Sorenson Spark (FLV1) picture header: frame size.

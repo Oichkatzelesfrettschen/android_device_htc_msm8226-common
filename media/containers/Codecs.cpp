@@ -5,6 +5,7 @@
  */
 
 #include "Codecs.h"
+#include "Tracks.h"
 
 #include <string.h>
 
@@ -122,10 +123,11 @@ bool ParseMp3Header(const uint8_t *p, size_t size, Mp3Header *out) {
 
 size_t AnnexBMaxSize(size_t size, int lengthSize) {
     const size_t prefix = lengthSize >= 1 && lengthSize <= 4 ? static_cast<size_t>(lengthSize) : 4;
+    size = std::min<size_t>(size, kMaxPacketBytes);
     const size_t grown = size / (prefix + 1) * 5 + size % (prefix + 1) + 4;
     // A four-byte prefix converts in place; the quarter margin covers a source
     // whose largest sample exceeds the size the index reported.
-    return std::max(grown, size + size / 4);
+    return std::min<size_t>(kMaxPacketBytes, std::max(grown, size + size / 4));
 }
 
 bool ParseAacConfig(const uint8_t *data, size_t size, AacConfig *out) {
@@ -366,27 +368,45 @@ bool ParseAvcConfig(const uint8_t *data, size_t size, AvcConfig *out) {
 }
 
 bool AvcToAnnexB(const uint8_t *data, size_t size, int lengthSize, std::vector<uint8_t> *out) {
-    if (lengthSize < 1 || lengthSize > 4) {
+    out->clear();
+    if (lengthSize < 1 || lengthSize > 4 || size > kMaxPacketBytes) {
         return false;
     }
-    out->clear();
-    out->reserve(size + size / 4 + 4);
-    size_t pos = 0;
-    while (pos < size) {
-        if (pos + static_cast<size_t>(lengthSize) > size) {
+    // Validate and size the complete sample before allocating decoder input.
+    // Short NAL prefixes can expand a legal stored packet beyond the ceiling.
+    const size_t prefix = static_cast<size_t>(lengthSize);
+    size_t outputSize = 0;
+    size_t position = 0;
+    while (position < size) {
+        if (prefix > size - position) {
             return false;
         }
-        size_t len = 0;
-        for (int i = 0; i < lengthSize; ++i) {
-            len = (len << 8) | data[pos++];
+        size_t length = 0;
+        for (size_t index = 0; index < prefix; ++index) {
+            length = (length << 8) | data[position++];
         }
-        if (len == 0 || len > size - pos) {
+        if (length == 0 || length > size - position
+                || kMaxPacketBytes - outputSize < 4
+                || length > kMaxPacketBytes - outputSize - 4) {
             return false;
+        }
+        outputSize += 4 + length;
+        position += length;
+    }
+    out->reserve(outputSize);
+    out->resize(outputSize);
+    size_t outputPosition = 0;
+    position = 0;
+    while (position < size) {
+        size_t length = 0;
+        for (size_t index = 0; index < prefix; ++index) {
+            length = (length << 8) | data[position++];
         }
         static const uint8_t kStart[4] = {0, 0, 0, 1};
-        out->insert(out->end(), kStart, kStart + 4);
-        out->insert(out->end(), data + pos, data + pos + len);
-        pos += len;
+        memcpy(out->data() + outputPosition, kStart, sizeof(kStart));
+        memcpy(out->data() + outputPosition + sizeof(kStart), data + position, length);
+        outputPosition += sizeof(kStart) + length;
+        position += length;
     }
     return true;
 }

@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <array>
 #include <string>
 #include <vector>
 
@@ -63,7 +64,8 @@ struct Container {
 bool ParseAvi(ByteSource *source, Container *out);
 bool ParseFlv(ByteSource *source, Container *out);
 
-// Upper bound on one stored packet; larger packets are malformed.
+// Upper bound on one stored packet or transformed decoder sample.
+// PluginGlue advertises the same ceiling in AMEDIAFORMAT_KEY_MAX_INPUT_SIZE.
 constexpr uint32_t kMaxPacketBytes = 16u << 20;
 // Upper bound on packets per track.
 constexpr size_t kMaxPackets = 4u << 20;
@@ -120,12 +122,15 @@ private:
     ByteSource *mSource;
     const TrackInfo *mTrack;
     size_t mNext = 0;
-    // kMp3Frames state: frames split from consumed chunks, a partial frame held
-    // across a chunk boundary, and the running timestamp.
-    std::vector<Sample> mPending;
-    size_t mPendingPos = 0;
-    std::vector<uint8_t> mCarry;
-    int64_t mMp3AnchorUs = -1;
+    // MPEG-2.5 Layer III reaches 1441 bytes at 160 kbps, 8 kHz with padding.
+    // A read window batches source access; only an incomplete frame or header
+    // survives a refill, and each next() returns one frame without queuing.
+    std::array<uint8_t, 16u << 10> mMp3Buffer;
+    size_t mMp3Begin = 0;
+    size_t mMp3End = 0;
+    uint32_t mMp3PacketPos = 0;
+    bool mMp3Anchored = false;
+    int64_t mMp3AnchorUs = 0;
     uint64_t mMp3Samples = 0;
 };
 
