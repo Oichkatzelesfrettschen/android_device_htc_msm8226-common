@@ -89,10 +89,17 @@ PRODUCT_PACKAGES += \
     libxml2 \
     Aperture
 
-# DRM
+# DRM: android.hardware.drm@1.0-service loads each plugin in
+# /vendor/lib/mediadrm. vendor/htc-a11chl installs the Widevine L3 plugin,
+# whose NEEDED protobuf library is libprotobuf-cpp-lite-v29.so, and the plugin
+# keeps its state in /data/vendor/w (rootdir/etc/init.drm.rc).
 PRODUCT_PACKAGES += \
     android.hardware.drm@1.0-impl \
-    android.hardware.drm@1.0-service
+    android.hardware.drm@1.0-service \
+    libprotobuf-cpp-lite-v29
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/etc/init.drm.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.drm.rc
 
 # fastbootd
 PRODUCT_PACKAGES += \
@@ -152,10 +159,15 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_telephony.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video_le.xml \
-    device/htc/msm8226-common/configs/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml
+    device/htc/msm8226-common/configs/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml \
+    device/htc/msm8226-common/configs/media_codecs_c2.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_c2.xml
 
 # ASF demuxer for the WMA, VC-1 and MPEG-4 streams in .wma, .wmv and .asf files.
 PRODUCT_PACKAGES += libasfextractor
+
+# AVI demuxer for the DivX, MPEG-4, MP3, AAC and PCM streams in .avi files, and
+# FLV demuxer for the Sorenson Spark, MP3 and AAC streams in .flv files.
+PRODUCT_PACKAGES += libaviextractor libflvextractor
 
 # Network
 PRODUCT_PACKAGES += liba11-legacy-radio
@@ -231,12 +243,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.usb@1.3-service.basic
 
-# Vibrator: the passthrough HAL loads vibrator.default, which writes
-# /sys/class/timed_output/vibrator/enable.
-PRODUCT_PACKAGES += \
-    android.hardware.vibrator@1.0-impl \
-    android.hardware.vibrator@1.0-service \
-    vibrator.default
+# Vibrator: device/htc/a11 builds android.hardware.vibrator-service.a11, which
+# serves IVibrator with amplitude control over the timed_output node.
 
 # Wifi
 PRODUCT_PACKAGES += \

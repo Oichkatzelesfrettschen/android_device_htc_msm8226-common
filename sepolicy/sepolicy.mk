@@ -21,3 +21,7 @@ BOARD_VENDOR_SEPOLICY_DIRS += device/htc/msm8226-common/sepolicy/common
 # private policy and the type it reads in system_ext public policy.
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += device/htc/msm8226-common/sepolicy/public
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/htc/msm8226-common/sepolicy/private
+
+# Domains and labels for the vendor HAL services that this tree and
+# device/htc/a11 build.
+BOARD_VENDOR_SEPOLICY_DIRS += device/htc/msm8226-common/sepolicy/hal

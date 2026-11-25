@@ -41,9 +41,16 @@ TARGET_CPU_VARIANT_RUNTIME := krait
 AUDIO_FEATURE_ENABLED_COMPRESS_VOIP := true
 AUDIO_FEATURE_ENABLED_EXTN_FORMATS := true
 AUDIO_FEATURE_ENABLED_EXTN_POST_PROC := true
+# FLAC_OFFLOAD_ENABLED reads snd_dec_flac from the kernel's compress_params.h, so
+# kernel/htc/a11 must carry the compress-offload UAPI before this flag builds.
+AUDIO_FEATURE_ENABLED_FLAC_OFFLOAD := true
 AUDIO_FEATURE_ENABLED_FLUENCE := true
 AUDIO_FEATURE_ENABLED_HFP := true
+AUDIO_FEATURE_ENABLED_HIFI_AUDIO := true
 AUDIO_FEATURE_ENABLED_PROXY_DEVICE := true
+AUDIO_FEATURE_ENABLED_SPEECH_OFFLOAD := true
+# WMA_OFFLOAD_ENABLED reads snd_enc_wma.avg_bit_rate from the kernel's compress_params.h.
+AUDIO_FEATURE_ENABLED_WMA_OFFLOAD := true
 AUDIO_FEATURE_ENABLED_LOW_LATENCY_CAPTURE := true
 BOARD_USES_ALSA_AUDIO := true
 
@@ -64,6 +71,12 @@ $(call soong_config_set,camera,legacy_hal1,true)
 # frameworks/av lists the Qualcomm WMA, AMR-WB+ and VC-1 OMX decoders in
 # GetComponentRole and configures them in ACodec when this is set.
 $(call soong_config_set,stagefright,omx_legacy_qcom_codecs,true)
+# Adds libcodec2_soft_a11vp6dec (media/vp6) to the software Codec2 runtime libraries.
+$(call soong_config_set,stagefright,a11_vp6_codec2,true)
+# The VP6 component and its core join the com.android.media.swcodec apex, whose
+# allowed_deps.txt in packages/modules/common lists only platform modules; the
+# product skips that list check instead of editing the shared project.
+UNSAFE_DISABLE_APEX_ALLOWED_DEPS_CHECK := true
 
 # Dexpreopt
 ifeq ($(HOST_OS),linux)
